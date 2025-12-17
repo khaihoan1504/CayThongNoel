@@ -172,6 +172,11 @@
             treeBaseRadius: 35
         };
 
+        // Hand control sensitivity: increase to make horizontal hand movement more responsive
+        // Set to 1.5× of the original 4.0 -> 6.0
+        const HAND_SENSITIVITY = 6.0; // try 6.0 for 1.5× sensitivity
+        const HAND_LERP = 0.1; // smoothing factor for following the hand (0..1)
+
         let scene, camera, renderer;
         let groupGold, groupRed, groupGift;
         let photoMeshes = [];
@@ -179,6 +184,7 @@
 
         let state = 'TREE';
         let selectedIndex = 0;
+        let handX = 0.5; // normalized hand X position (0-1) used for rotation
 
         // --- SHAPE MATH ---
         function getANHYEUEMPoint() {
@@ -382,7 +388,7 @@
             cntt7Mesh.position.set(0, -30, 0); cntt7Mesh.visible = false; scene.add(cntt7Mesh);
         }
 
-        function updateParticleGroup(group, targetState, speed, time) {
+        function updateParticleGroup(group, targetState, speed, time, handRotY) {
             const attr = group.geometry.attributes;
             const positions = attr.position.array, colors = attr.color.array, sizes = attr.size.array;
             const u = group.geometry.userData;
@@ -403,7 +409,12 @@
             if (targetState === 'UNIVERSE') { group.rotation.y -= 0.002; group.rotation.z = Math.sin(time * 0.5) * 0.2; }
             else if (targetState === 'GIFT') { group.rotation.y += 0.01; group.rotation.x = Math.sin(time) * 0.1; }
             else if (targetState === 'TREE') { group.rotation.y += 0.005; group.rotation.x = 0; group.rotation.z = 0; }
-            else { group.rotation.y *= 0.95; group.rotation.x *= 0.95; group.rotation.z *= 0.95; }
+            else if (targetState === 'EXPLODE') {
+                // follow hand horizontal position smoothly
+                group.scale.set(1,1,1);
+                // smoother and configurable follow using HAND_LERP
+                group.rotation.y = THREE.MathUtils.lerp(group.rotation.y, handRotY, HAND_LERP);
+            } else { group.rotation.y *= 0.95; group.rotation.x *= 0.95; group.rotation.z *= 0.95; }
 
             const count = positions.length / 3;
             for (let i = 0; i < count; i++) {
@@ -418,20 +429,37 @@
         function animate() {
             requestAnimationFrame(animate);
             const time = Date.now() * 0.001, speed = 0.06;
-            updateParticleGroup(groupGold, state, speed, time);
-            updateParticleGroup(groupRed, state, speed, time);
-            updateParticleGroup(groupGift, state, speed, time);
+            const handRotY = (handX - 0.5) * HAND_SENSITIVITY; // convert normalized handX to rotation target (sensitivity applied)
+            updateParticleGroup(groupGold, state, speed, time, handRotY);
+            updateParticleGroup(groupRed, state, speed, time, handRotY);
+            updateParticleGroup(groupGift, state, speed, time, handRotY);
 
             titleMesh.visible = (state === 'TREE'); starMesh.visible = (state === 'TREE');
             loveMesh.visible = (state === 'HEART'); cntt7Mesh.visible = (state === 'ANHYEUEM');
 
             if (state === 'EXPLODE') {
+                titleMesh.visible = false; starMesh.visible = false; loveMesh.visible = false;
+                const baseAngle = groupGold.rotation.y;
+                const angleStep = (Math.PI * 2) / 5;
+                let bestIdx = 0; let maxZ = -999;
                 photoMeshes.forEach((mesh, i) => {
                     mesh.visible = true;
-                    const a = time * 0.5 + (i * (Math.PI * 2 / 5));
-                    mesh.position.set(Math.cos(a) * 30, Math.sin(time + i) * 5, Math.sin(a) * 30);
-                    mesh.lookAt(camera.position); mesh.scale.lerp(new THREE.Vector3(1, 1, 1), 0.1);
+                    const angle = baseAngle + i * angleStep;
+                    const x = Math.sin(angle) * CONFIG.treeBaseRadius * 0.85;
+                    const z = Math.cos(angle) * CONFIG.treeBaseRadius * 0.85;
+                    const y = Math.sin(time + i) * 3;
+                    mesh.position.lerp(new THREE.Vector3(x, y, z), 0.1);
+                    mesh.lookAt(camera.position);
+                    if (z > maxZ) { maxZ = z; bestIdx = i; }
+                    if (z > 5) {
+                        const ds = 1.0 + (z/(CONFIG.treeBaseRadius*0.85))*0.8;
+                        mesh.scale.lerp(new THREE.Vector3(ds, ds, ds), 0.1);
+                    } else {
+                        mesh.scale.lerp(new THREE.Vector3(0.6, 0.6, 0.6), 0.1);
+                    }
                 });
+                selectedIndex = bestIdx;
+
             } else if (state === 'PHOTO') {
                 photoMeshes.forEach((mesh, i) => {
                     mesh.visible = true;
@@ -473,6 +501,7 @@
 
                 // 2. One Hand Logic
                 const lm = results.multiHandLandmarks[0];
+                handX = lm[9].x; // update horizontal hand position for rotation control
 
                 // Finger States (Open if Tip Y < PIP Y) - Note: Y is inverted in screen coords? No, 0 is top.
                 // So if tip is higher (smaller y) than pip, it's extended.
