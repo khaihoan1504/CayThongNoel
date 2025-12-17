@@ -185,6 +185,7 @@
         let frameMeshes = [];
         let titleMesh, starMesh, loveMesh, cntt7Mesh;
         let sparkleStars = [];
+        let sparkleGoldPoints = null;
         // let sparkleStarsUI = [];
 
         let state = 'TREE';
@@ -294,7 +295,43 @@
 
             createPhotos();
             createDecorations();
-                // Đã loại bỏ các ngôi sao lớn quanh cây thông và các chấm vàng phủ UI
+            createSparkleGoldPoints();
+            // Tạo các hạt lấp lánh vàng phủ toàn màn hình
+            function createSparkleGoldPoints() {
+                const count = 400;
+                const positions = [];
+                for (let i = 0; i < count; i++) {
+                    // Phủ random toàn màn hình (không gian 3D rộng)
+                    const x = (Math.random() - 0.5) * window.innerWidth * 0.22;
+                    const y = (Math.random() - 0.5) * window.innerHeight * 0.22;
+                    const z = -80 + Math.random() * 160;
+                    positions.push(x, y, z);
+                }
+                const geo = new THREE.BufferGeometry();
+                geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+                // Texture vàng lấp lánh
+                const canvas = document.createElement('canvas');
+                canvas.width = 32; canvas.height = 32;
+                const ctx = canvas.getContext('2d');
+                const grd = ctx.createRadialGradient(16, 16, 0, 16, 16, 15);
+                grd.addColorStop(0, '#fffbe7');
+                grd.addColorStop(0.4, '#FFD700');
+                grd.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = grd;
+                ctx.fillRect(0, 0, 32, 32);
+                const tex = new THREE.CanvasTexture(canvas);
+                const mat = new THREE.PointsMaterial({
+                    size: 3.2,
+                    map: tex,
+                    transparent: true,
+                    opacity: 1.0,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false
+                });
+                sparkleGoldPoints = new THREE.Points(geo, mat);
+                sparkleGoldPoints.userData = { phases: Array.from({length: count}, () => Math.random() * Math.PI * 2) };
+                scene.add(sparkleGoldPoints);
+            }
             animate();
         // Tạo các ngôi sao lấp lánh nhỏ quanh cây thông
         function createSparkleStars() {
@@ -453,6 +490,18 @@
         }
 
         function animate() {
+                        // Animate các hạt vàng phủ toàn màn hình lấp lánh
+                        if (sparkleGoldPoints) {
+                            const attr = sparkleGoldPoints.geometry.attributes;
+                            const phases = sparkleGoldPoints.userData.phases;
+                            const count = attr.position.count;
+                            for (let i = 0; i < count; i++) {
+                                // Animate opacity từng hạt bằng alpha vertex (nếu muốn lung linh hơn có thể animate size)
+                                // Nhưng PointsMaterial không hỗ trợ alpha per-vertex, nên animate toàn bộ material
+                            }
+                            // Animate opacity toàn bộ
+                            sparkleGoldPoints.material.opacity = 0.6 + 0.4 * Math.abs(Math.sin(Date.now() * 0.001 * 2.5));
+                        }
             requestAnimationFrame(animate);
             const time = Date.now() * 0.001, speed = (state === 'ANHYEUEM') ? 0.03 : 0.06;
             const handRotY = (handX - 0.5) * HAND_SENSITIVITY; // convert normalized handX to rotation target (sensitivity applied)
