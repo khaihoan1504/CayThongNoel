@@ -302,20 +302,17 @@
                 const starCount = 60;
                 sparkleStarsUI = [];
                 for (let i = 0; i < starCount; i++) {
-                    // Tạo canvas hình ngôi sao nhỏ màu vàng
+                    // Tạo canvas hình tròn nhỏ màu vàng
                     const cvs = document.createElement('canvas');
-                    cvs.width = 64; cvs.height = 64;
+                    cvs.width = 32; cvs.height = 32;
                     const ctx = cvs.getContext('2d');
                     ctx.save();
-                    ctx.translate(32, 32);
+                    ctx.translate(16, 16);
                     ctx.beginPath();
-                    for (let j = 0; j < 5; j++) {
-                        ctx.lineTo(Math.cos((18 + j * 72) * Math.PI / 180) * 28, -Math.sin((18 + j * 72) * Math.PI / 180) * 28);
-                        ctx.lineTo(Math.cos((54 + j * 72) * Math.PI / 180) * 10, -Math.sin((54 + j * 72) * Math.PI / 180) * 10);
-                    }
+                    ctx.arc(0, 0, 8 + Math.random() * 4, 0, Math.PI * 2);
                     ctx.closePath();
                     ctx.shadowColor = '#FFD700';
-                    ctx.shadowBlur = 16;
+                    ctx.shadowBlur = 12;
                     ctx.fillStyle = '#FFD700';
                     ctx.globalAlpha = 0.95;
                     ctx.fill();
@@ -326,9 +323,9 @@
                     // Phủ random toàn màn hình (không gian 3D rộng)
                     const x = (Math.random() - 0.5) * window.innerWidth * 0.9;
                     const y = (Math.random() - 0.5) * window.innerHeight * 0.9;
-                    const z = -60 + Math.random() * 120; // phủ cả trước và sau cây thông
+                    const z = -60 + Math.random() * 120;
                     sprite.position.set(x * 0.18, y * 0.18, z);
-                    const scale = 2.5 + Math.random() * 3.5;
+                    const scale = 1.2 + Math.random() * 2.2;
                     sprite.scale.set(scale, scale, 1);
                     sprite.material.userData = { sparklePhase: Math.random() * Math.PI * 2, sparkleSpeed: 2.5 + Math.random() * 2 };
                     scene.add(sprite);
