@@ -413,19 +413,7 @@
             else if (targetState === 'LION') key = 'lion';
 
             let targets = u[key];
-            // Giãn các hạt ra gấp đôi khi ở trạng thái ANHYEUEM
-            if (targetState === 'ANHYEUEM') {
-                for (let i = 0; i < positions.length; i += 3) {
-                    const tx = u[key][i] * 2;
-                    const ty = u[key][i+1] * 2;
-                    const tz = u[key][i+2] * 2;
-                    positions[i] += (tx - positions[i]) * speed;
-                    positions[i+1] += (ty - positions[i+1]) * speed;
-                    positions[i+2] += (tz - positions[i+2]) * speed;
-                }
-            } else {
-                for (let i = 0; i < positions.length; i++) positions[i] += (targets[i] - positions[i]) * speed;
-            }
+            for (let i = 0; i < positions.length; i++) positions[i] += (targets[i] - positions[i]) * speed;
             attr.position.needsUpdate = true;
 
             // Rotation & Effects
