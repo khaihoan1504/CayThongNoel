@@ -570,9 +570,8 @@
                 // Rock: Index & Pinky
                 if (idx && !mid && !ring && pinky) { state = 'LION'; return; }
 
-                // Thumb Up: Only Thumb (and maybe index curled)
-                // Relaxed: Thumb is up, others are down.
-                if (thumbUp && !idx && !mid && !ring && !pinky) { state = 'GIFT'; return; }
+                // Gift: three fingers (Index + Middle + Ring) extended, Pinky not extended
+                if (idx && mid && ring && !pinky) { state = 'GIFT'; return; }
 
                 // Default fallbacks to avoid sticking
                 // If somewhat closed -> Tree
