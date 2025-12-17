@@ -423,18 +423,21 @@
             else if (targetState === 'GIFT') { group.rotation.y += 0.01; group.rotation.x = Math.sin(time) * 0.1; }
             else if (targetState === 'TREE') { group.rotation.y += 0.005; group.rotation.x = 0; group.rotation.z = 0; }
             else if (targetState === 'EXPLODE') {
-                // follow hand horizontal position smoothly
                 group.scale.set(1,1,1);
-                // smoother and configurable follow using HAND_LERP
                 group.rotation.y = THREE.MathUtils.lerp(group.rotation.y, handRotY, HAND_LERP);
             } else { group.rotation.y *= 0.95; group.rotation.x *= 0.95; group.rotation.z *= 0.95; }
+
+            // Twinkle effect: animate material opacity for sparkle
+            if (!group.material.userData) group.material.userData = {};
+            const sparkleSpeed = 3.5;
+            group.material.opacity = 0.7 + 0.3 * Math.sin(time * sparkleSpeed + group.id);
 
             const count = positions.length / 3;
             for (let i = 0; i < count; i++) {
                 let b = 0.8 + 0.4 * Math.sin(time * (key === 'explode' ? 15 : 5) + u.phases[i]);
                 if (targetState === 'HEART' || targetState === 'CNTT7') b = 1.0;
                 colors[i * 3] = u.baseColor.r * b; colors[i * 3 + 1] = u.baseColor.g * b; colors[i * 3 + 2] = u.baseColor.b * b;
-                sizes[i] = u.baseSize;
+                sizes[i] = u.baseSize * (1 + 0.25 * Math.sin(time * 6 + u.phases[i])); // thêm hiệu ứng size nhấp nháy
             }
             attr.color.needsUpdate = true; attr.size.needsUpdate = true;
         }
