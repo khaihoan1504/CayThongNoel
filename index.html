@@ -476,7 +476,7 @@
 
             } else if (state === 'PHOTO') {
                 photoMeshes.forEach((mesh, i) => {
-                    mesh.rotation.set(0, 0, handRotY * 2);
+                    mesh.rotation.set(0, 0, 0);
                     mesh.visible = true;
                     if (i === selectedIndex) {
                         mesh.position.lerp(new THREE.Vector3(0, 0, 60), 0.1); mesh.scale.lerp(new THREE.Vector3(6, 6, 6), 0.1);
