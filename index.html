@@ -85,78 +85,116 @@
             right: 15px;
             width: 160px;
             height: 120px;
-            function startSystem() {
-                document.getElementById('btnStart').style.display = 'none';
-                bgMusic.play().catch(e => console.log(e));
-                init3D();
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            transform: scaleX(-1);
+            opacity: 0.8;
+            border-radius: 10px;
+            background: #000;
+        }
 
-                const video = document.getElementsByClassName('input_video')[0];
-                const canvas = document.getElementById('camera-preview');
-                const ctx = canvas.getContext('2d');
+        #copyright {
+            position: absolute;
+            bottom: 5px;
+            right: 15px;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 12px;
+            z-index: 100;
+            font-family: sans-serif;
+            pointer-events: none;
+            font-style: italic;
+        }
+    </style>
+</head>
 
-                const hands = new Hands({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}` });
-                hands.setOptions({ maxNumHands: 2, modelComplexity: 1, minDetectionConfidence: 0.7, minTrackingConfidence: 0.7 });
+<body>
 
-                hands.onResults(results => {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
+    <div id="ui-layer">
+        <div class="guide">
+            ❤️ <b>2 Tay (Tim):</b> Love<br>
+            ✊ <b>Nắm đấm:</b> Thu cây &nbsp;|&nbsp; 🖐 <b>Xòe tay:</b> Mở rộng &nbsp;|&nbsp; 👌 <b>OK:</b> Zoom Photo<br>
 
-                    if (results.multiHandLandmarks.length === 0) { state = 'TREE'; return; }
+                ✌️➕☝️ <b>3 Ngón:</b> Quà &nbsp;|&nbsp; ☝️ <b>1 Ngón:</b> Vũ trụ &nbsp;|&nbsp; ✌️ <b>2 Ngón:</b> Sít rịt &nbsp;|&nbsp; 🤘 <b>Rock:</b> Lion
+        </div>
+        <button id="btnStart" onclick="startSystem()">START MAGIC</button>
+    </div>
 
-                    // 1. Two Hands Check -> HEART
-                    if (results.multiHandLandmarks.length === 2) {
-                        const h1 = results.multiHandLandmarks[0], h2 = results.multiHandLandmarks[1];
-                        const distIndex = Math.hypot(h1[8].x - h2[8].x, h1[8].y - h2[8].y);
-                        const distThumb = Math.hypot(h1[4].x - h2[4].x, h1[4].y - h2[4].y);
-                        if (distIndex < 0.15 && distThumb < 0.15) { state = 'HEART'; return; }
-                    }
+    <div id="copyright">© Khai Hoan</div>
 
-                    // 2. One Hand Logic
-                    const lm = results.multiHandLandmarks[0];
-                    handX = lm[9].x; // update horizontal hand position for rotation control
+    <div id="selectedPhoto" style="position: absolute; bottom: 100px; width: 100%; text-align: center; color: rgba(255,255,255,0.8); font-size: 18px; font-weight: bold; text-shadow: 0 2px 4px black; display: none;">Ảnh 1 được chọn</div>
 
-                    // Finger States (Open if Tip Y < PIP Y) - Note: Y is inverted in screen coords? No, 0 is top.
-                    // So if tip is higher (smaller y) than pip, it's extended.
-                    const isExt = (tip, pip) => lm[tip].y < lm[pip].y;
+    <div id="canvas-container"></div>
+    <video class="input_video" style="display:none"></video>
+    <canvas id="camera-preview"></canvas>
 
-                    const idx = isExt(8, 6), mid = isExt(12, 10), ring = isExt(16, 14), pinky = isExt(20, 18);
+    <script>
+        const MUSIC_URL = "./audio.mp3";
+        let bgMusic = new Audio(MUSIC_URL);
+        bgMusic.loop = true; bgMusic.volume = 1.0;
 
-                    // A. Pinch (Photo)
-                    const pinchDist = Math.hypot(lm[4].x - lm[8].x, lm[4].y - lm[8].y);
-                    if (pinchDist < 0.05) {
-                        state = 'PHOTO';
-                        selectedIndex = Math.floor(lm[9].x * 5) % 5; // Rotate photos by hand position
-                        return;
-                    }
+        const loader = new THREE.TextureLoader();
+        const photoFiles = [
+            './image1.jpg',
+            './image2.jpg',
+            './image3.jpg',
+            './image4.jpg',
+            './image5.jpg',
+        ];
+        const photoTextures = [];
+        photoFiles.forEach((f, i) => photoTextures[i] = loader.load(f));
 
-                    // B. Gestures based on extensions
-                    // Fist: No fingers extended
-                    if (!idx && !mid && !ring && !pinky) { state = 'TREE'; return; }
+        function createCustomTexture(type) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 64; canvas.height = 64;
+            const ctx = canvas.getContext('2d');
+            const cx = 32, cy = 32;
 
-                    // Open: All extended
-                    if (idx && mid && ring && pinky) { state = 'EXPLODE'; return; }
-
-                    // Point: Only Index
-                    if (idx && !mid && !ring && !pinky) { state = 'UNIVERSE'; return; }
-
-                    // Victory: Index & Middle
-                    if (idx && mid && !ring && !pinky) { state = 'ANHYEUEM'; return; }
-
-                    // Rock: Index & Pinky
-                    if (idx && !mid && !ring && pinky) { state = 'LION'; return; }
-
-                    // Gift: three fingers (Index + Middle + Ring) extended, Pinky not extended
-                    if (idx && mid && ring && !pinky) { state = 'GIFT'; return; }
-                });
-
-                const cameraUtils = new Camera(video, {
-                    onFrame: async () => { await hands.send({ image: video }); }, width: 320, height: 240
-                });
-                cameraUtils.start();
+            const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, 30);
+            if (type === 'gold_glow') {
+                grd.addColorStop(0, '#FFFFFF'); grd.addColorStop(0.4, '#FFD700'); grd.addColorStop(1, 'rgba(0,0,0,0)');
+            } else if (type === 'red_light') {
+                grd.addColorStop(0, '#FFAAAA'); grd.addColorStop(0.4, '#FF0000'); grd.addColorStop(1, 'rgba(0,0,0,0)');
+            } else if (type === 'gift') {
+                grd.addColorStop(0, '#AAFFAA'); grd.addColorStop(0.4, '#00FF00'); grd.addColorStop(1, 'rgba(0,0,0,0)');
             }
+            ctx.fillStyle = grd; ctx.fillRect(0, 0, 64, 64);
+            return new THREE.CanvasTexture(canvas);
+        }
 
-            // Đảm bảo startSystem có thể gọi từ HTML
-            window.startSystem = startSystem;
+        const textures = {
+            gold: createCustomTexture('gold_glow'),
+            red: createCustomTexture('red_light'),
+            gift: createCustomTexture('gift')
+        };
+
+        const CONFIG = {
+            goldCount: 2200,
+            redCount: 400,
+            giftCount: 200,
+            treeHeight: 70,
+            treeBaseRadius: 35
+        };
+
+        // Hand control sensitivity: increase to make horizontal hand movement more responsive
+        // Set to 1.5× of the original 4.0 -> 6.0
+        const HAND_SENSITIVITY = 12.0; // tăng gấp 2 lần độ nhạy xoay ảnh khi xòe tay
+        const HAND_LERP = 0.1; // smoothing factor for following the hand (0..1)
+
+        let scene, camera, renderer;
+        let groupGold, groupRed, groupGift;
+        let photoMeshes = [];
+        let titleMesh, starMesh, loveMesh, cntt7Mesh;
+
+        let state = 'TREE';
+        let selectedIndex = 0;
+        let handX = 0.5; // normalized hand X position (0-1) used for rotation
+
+        // --- SHAPE MATH ---
+        function getANHYEUEMPoint() {
+            const char = Math.floor(Math.random() * 8);
+            let x = 0, y = 0, z = 0;
+            const t = Math.random();
+            switch (char) {
+                case 0: // A
                     // Vị trí x trung tâm khoảng -70
                     if (t < 0.4) { x = -75 + t / 0.4 * 5; y = -10 + t / 0.4 * 20; } // Nét lên
                     else if (t < 0.8) { x = -70 + (t - 0.4) / 0.4 * 5; y = 10 - (t - 0.4) / 0.4 * 20; } // Nét xuống
