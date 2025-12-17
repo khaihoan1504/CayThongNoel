@@ -299,22 +299,22 @@
             createUISparkleStars();
             // Tạo các ngôi sao lấp lánh vàng phủ khắp UI
             function createUISparkleStars() {
-                const starCount = 60;
+                const starCount = 25;
                 sparkleStarsUI = [];
                 for (let i = 0; i < starCount; i++) {
                     // Tạo canvas hình tròn nhỏ màu vàng
                     const cvs = document.createElement('canvas');
-                    cvs.width = 32; cvs.height = 32;
+                    cvs.width = 20; cvs.height = 20;
                     const ctx = cvs.getContext('2d');
                     ctx.save();
-                    ctx.translate(16, 16);
+                    ctx.translate(10, 10);
                     ctx.beginPath();
-                    ctx.arc(0, 0, 8 + Math.random() * 4, 0, Math.PI * 2);
+                    ctx.arc(0, 0, 2.2 + Math.random() * 1.2, 0, Math.PI * 2);
                     ctx.closePath();
                     ctx.shadowColor = '#FFD700';
-                    ctx.shadowBlur = 12;
+                    ctx.shadowBlur = 6;
                     ctx.fillStyle = '#FFD700';
-                    ctx.globalAlpha = 0.95;
+                    ctx.globalAlpha = 0.92;
                     ctx.fill();
                     ctx.restore();
                     const tex = new THREE.CanvasTexture(cvs);
@@ -325,7 +325,7 @@
                     const y = (Math.random() - 0.5) * window.innerHeight * 0.9;
                     const z = -60 + Math.random() * 120;
                     sprite.position.set(x * 0.18, y * 0.18, z);
-                    const scale = 1.2 + Math.random() * 2.2;
+                    const scale = 0.7 + Math.random() * 0.7;
                     sprite.scale.set(scale, scale, 1);
                     sprite.material.userData = { sparklePhase: Math.random() * Math.PI * 2, sparkleSpeed: 2.5 + Math.random() * 2 };
                     scene.add(sprite);
