@@ -554,9 +554,8 @@
                 // B. Gestures based on extensions
 
                 // Fist: No fingers extended
-                    // Fist: All fingers coiled (not extended) and palm facing camera (z of wrist < z of finger tips)
-                    const palmFacing = (lm[0].z < lm[8].z && lm[0].z < lm[12].z && lm[0].z < lm[16].z && lm[0].z < lm[20].z);
-                    if (!idx && !mid && !ring && !pinky && palmFacing) { state = 'TREE'; return; }
+                    // Fist: All fingers coiled (not extended)
+                    if (!idx && !mid && !ring && !pinky) { state = 'TREE'; return; }
 
                 // Open: All extended
                 if (idx && mid && ring && pinky) { state = 'EXPLODE'; return; }
