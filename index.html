@@ -111,7 +111,7 @@
     <div id="ui-layer">
         <div class="guide">
             ❤️ <b>2 Tay (Tim):</b> Love<br>
-            ✊ <b>Nắm đấm:</b> Cây &nbsp;|&nbsp; 🖐 <b>Xòe tay:</b> Mở rộng &nbsp;|&nbsp; 👌 <b>OK:</b> Zoom Photo<br>
+            ✊ <b>Nắm đấm:</b> Thu cây &nbsp;|&nbsp; 🖐 <b>Xòe tay:</b> Mở rộng &nbsp;|&nbsp; 👌 <b>OK:</b> Zoom Photo<br>
 
             👍 <b>Like:</b> Quà &nbsp;|&nbsp; ☝️ <b>1 Ngón:</b> Vũ trụ &nbsp;|&nbsp; ✌️ <b>2 Ngón:</b> Sít rịt &nbsp;|&nbsp; 🤘 <b>Rock:</b> Lion
         </div>
@@ -119,6 +119,8 @@
     </div>
 
     <div id="copyright">© Khai Hoan</div>
+
+    <div id="selectedPhoto" style="position: absolute; bottom: 100px; width: 100%; text-align: center; color: rgba(255,255,255,0.8); font-size: 18px; font-weight: bold; text-shadow: 0 2px 4px black; display: none;">Ảnh 1 được chọn</div>
 
     <div id="canvas-container"></div>
     <video class="input_video" style="display:none"></video>
@@ -503,7 +505,7 @@
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
 
-                if (results.multiHandLandmarks.length === 0) { state = 'TREE'; return; }
+                if (results.multiHandLandmarks.length === 0) { state = 'TREE'; document.getElementById('selectedPhoto').style.display = 'none'; return; }
 
                 // 1. Two Hands Check -> HEART
                 if (results.multiHandLandmarks.length === 2) {
@@ -516,6 +518,10 @@
                 // 2. One Hand Logic
                 const lm = results.multiHandLandmarks[0];
                 handX = lm[9].x; // update horizontal hand position for rotation control
+
+                selectedIndex = Math.floor(handX * 5) % 5;
+                document.getElementById('selectedPhoto').innerText = `Ảnh ${selectedIndex + 1} được chọn`;
+                document.getElementById('selectedPhoto').style.display = 'block';
 
                 // Finger States (Open if Tip Y < PIP Y) - Note: Y is inverted in screen coords? No, 0 is top.
                 // So if tip is higher (smaller y) than pip, it's extended.
@@ -531,7 +537,7 @@
                 const pinchDist = Math.hypot(lm[4].x - lm[8].x, lm[4].y - lm[8].y);
                 if (pinchDist < 0.05) {
                     state = 'PHOTO';
-                    selectedIndex = 0; // Chọn ảnh trên cùng
+                    selectedIndex = Math.floor(lm[9].x * 5) % 5; // Chọn ảnh dựa trên vị trí tay
                     return;
                 }
 
