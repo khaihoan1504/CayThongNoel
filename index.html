@@ -186,26 +186,56 @@
             let x = 0, y = 0, z = 0;
             const t = Math.random();
             switch (char) {
-                case 0: // C
-                    const angle = 0.5 + t * 5.0;
-                    x = -50 + 10 * Math.cos(angle); y = 10 * Math.sin(angle);
+                case 0: // A
+                    // Vị trí x trung tâm khoảng -70
+                    if (t < 0.4) { x = -75 + t / 0.4 * 5; y = -10 + t / 0.4 * 20; } // Nét lên
+                    else if (t < 0.8) { x = -70 + (t - 0.4) / 0.4 * 5; y = 10 - (t - 0.4) / 0.4 * 20; } // Nét xuống
+                    else { x = -72.5 + (t - 0.8) / 0.2 * 5; y = 0; } // Gạch ngang
                     break;
                 case 1: // N
-                    if (t < 0.33) { x = -30; y = -10 + (t / 0.33) * 20; }
-                    else if (t < 0.66) { x = -30 + ((t - 0.33) / 0.33) * 10; y = 10 - ((t - 0.33) / 0.33) * 20; }
-                    else { x = -20; y = -10 + ((t - 0.66) / 0.34) * 20; }
+                    // Vị trí x trung tâm khoảng -50
+                    if (t < 0.33) { x = -55; y = -10 + (t / 0.33) * 20; } // Lên
+                    else if (t < 0.66) { x = -55 + ((t - 0.33) / 0.33) * 10; y = 10 - ((t - 0.33) / 0.33) * 20; } // Chéo xuống
+                    else { x = -45; y = -10 + ((t - 0.66) / 0.34) * 20; } // Lên
                     break;
-                case 2: // T
-                    if (t < 0.4) { x = -5 + t / 0.4 * 10; y = 10; }
-                    else { x = 0; y = 10 - ((t - 0.4) / 0.6) * 20; }
+                case 2: // H
+                    // Vị trí x trung tâm khoảng -30
+                    if (t < 0.33) { x = -35; y = 10 - (t / 0.33) * 20; } // Cột trái
+                    else if (t < 0.66) { x = -25; y = 10 - ((t - 0.33) / 0.33) * 20; } // Cột phải
+                    else { x = -35 + ((t - 0.66) / 0.34) * 10; y = 0; } // Gạch giữa
                     break;
-                case 3: // T
-                    if (t < 0.4) { x = 20 + t / 0.4 * 10; y = 10; }
-                    else { x = 25; y = 10 - ((t - 0.4) / 0.6) * 20; }
+                case 3: // Y
+                    // Vị trí x trung tâm khoảng -10
+                    if (t < 0.33) { x = -15 + (t / 0.33) * 5; y = 10 - (t / 0.33) * 10; } // Chéo trái
+                    else if (t < 0.66) { x = -5 - ((t - 0.33) / 0.33) * 5; y = 10 - ((t - 0.33) / 0.33) * 10; } // Chéo phải
+                    else { x = -10; y = ((t - 0.66) / 0.34) * -10; } // Chân
                     break;
-                case 4: // 7
-                    if (t < 0.3) { x = 40 + t / 0.3 * 10; y = 10; }
-                    else { x = 50 - ((t - 0.3) / 0.7) * 10; y = 10 - ((t - 0.3) / 0.7) * 20; }
+                case 4: // E
+                    // Vị trí x trung tâm khoảng 10
+                    if (t < 0.3) { x = 5; y = 10 - (t / 0.3) * 20; } // Cột dọc
+                    else if (t < 0.55) { x = 5 + ((t - 0.3) / 0.25) * 10; y = 10; } // Ngang trên
+                    else if (t < 0.8) { x = 5 + ((t - 0.55) / 0.25) * 8; y = 0; } // Ngang giữa
+                    else { x = 5 + ((t - 0.8) / 0.2) * 10; y = -10; } // Ngang dưới
+                    break;
+                case 5: // U
+                    // Vị trí x trung tâm khoảng 30
+                    if (t < 0.33) { x = 25; y = 10 - (t / 0.33) * 20; } // Xuống trái
+                    else if (t < 0.66) { x = 25 + ((t - 0.33) / 0.33) * 10; y = -10; } // Đáy ngang
+                    else { x = 35; y = -10 + ((t - 0.66) / 0.34) * 20; } // Lên phải
+                    break;
+                case 6: // E
+                    // Vị trí x trung tâm khoảng 50 (Copy logic chữ E trên và cộng thêm offset X)
+                    if (t < 0.3) { x = 45; y = 10 - (t / 0.3) * 20; }
+                    else if (t < 0.55) { x = 45 + ((t - 0.3) / 0.25) * 10; y = 10; }
+                    else if (t < 0.8) { x = 45 + ((t - 0.55) / 0.25) * 8; y = 0; }
+                    else { x = 45 + ((t - 0.8) / 0.2) * 10; y = -10; }
+                    break;
+                case 7: // M
+                    // Vị trí x trung tâm khoảng 70
+                    if (t < 0.25) { x = 65; y = -10 + (t / 0.25) * 20; } // Lên trái
+                    else if (t < 0.5) { x = 65 + ((t - 0.25) / 0.25) * 5; y = 10 - ((t - 0.25) / 0.25) * 10; } // Xuống giữa
+                    else if (t < 0.75) { x = 70 + ((t - 0.5) / 0.25) * 5; y = ((t - 0.5) / 0.25) * 10; } // Lên phải
+                    else { x = 75; y = 10 - ((t - 0.75) / 0.25) * 20; } // Xuống phải
                     break;
             }
             return { x, y, z: (Math.random() - 0.5) * 2 };
