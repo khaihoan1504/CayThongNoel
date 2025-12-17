@@ -122,7 +122,7 @@
 
     <div id="selectedPhoto" style="position: absolute; bottom: 100px; width: 100%; text-align: center; color: rgba(255,255,255,0.8); font-size: 18px; font-weight: bold; text-shadow: 0 2px 4px black; display: none;">Ảnh 1 được chọn</div>
 
-    <div id="photoFrame" style="position: absolute; top: 15px; width: 32px; height: 120px; border: 3px solid red; display: none; pointer-events: none;"></div>
+    <div id="photoFrame" style="position: absolute; top: 15px; width: 32px; height: 120px; border: 3px solid red; display: none; pointer-events: none; z-index: 10;"></div>
 
     <div id="canvas-container"></div>
     <video class="input_video" style="display:none"></video>
@@ -521,14 +521,14 @@
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
 
-                if (results.multiHandLandmarks.length === 0) { state = 'TREE'; document.getElementById('selectedPhoto').style.display = 'none'; document.getElementById('photoFrame').style.display = 'none'; return; }
+                if (results.multiHandLandmarks.length === 0) { state = 'TREE'; document.getElementById('selectedPhoto').style.display = 'none'; return; }
 
                 // 1. Two Hands Check -> HEART
                 if (results.multiHandLandmarks.length === 2) {
                     const h1 = results.multiHandLandmarks[0], h2 = results.multiHandLandmarks[1];
                     const distIndex = Math.hypot(h1[8].x - h2[8].x, h1[8].y - h2[8].y);
                     const distThumb = Math.hypot(h1[4].x - h2[4].x, h1[4].y - h2[4].y);
-                    if (distIndex < 0.15 && distThumb < 0.15) { state = 'HEART'; document.getElementById('selectedPhoto').style.display = 'none'; document.getElementById('photoFrame').style.display = 'none'; return; }
+                    if (distIndex < 0.15 && distThumb < 0.15) { state = 'HEART'; document.getElementById('selectedPhoto').style.display = 'none'; return; }
                 }
 
                 // 2. One Hand Logic
@@ -539,9 +539,9 @@
                 document.getElementById('selectedPhoto').innerText = `Ảnh ${selectedIndex + 1} được chọn`;
                 document.getElementById('selectedPhoto').style.display = 'block';
 
-                const cameraLeft = window.innerWidth - 15 - 160;
-                document.getElementById('photoFrame').style.left = (cameraLeft + selectedIndex * 32) + 'px';
-                document.getElementById('photoFrame').style.display = 'block';
+                // const cameraLeft = window.innerWidth - 15 - 160;
+                // document.getElementById('photoFrame').style.left = (cameraLeft + selectedIndex * 32) + 'px';
+                // document.getElementById('photoFrame').style.display = 'block';
 
                 // Finger States (Open if Tip Y < PIP Y) - Note: Y is inverted in screen coords? No, 0 is top.
                 // So if tip is higher (smaller y) than pip, it's extended.
