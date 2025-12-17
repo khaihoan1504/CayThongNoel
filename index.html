@@ -111,9 +111,9 @@
     <div id="ui-layer">
         <div class="guide">
             ❤️ <b>2 Tay (Tim):</b> Love<br>
-            ✊ <b>Nắm đấm:</b> Quà &nbsp;|&nbsp; 🖐 <b>Xòe tay:</b> Mở rộng &nbsp;|&nbsp; 👌 <b>OK:</b> Zoom Photo<br>
+            ✊ <b>Nắm đấm:</b> Thu cây &nbsp;|&nbsp; 🖐 <b>Xòe tay:</b> Mở rộng &nbsp;|&nbsp; 👌 <b>OK:</b> Zoom Photo<br>
 
-            👍 <b>Like:</b> Thu cây &nbsp;|&nbsp; ☝️ <b>1 Ngón:</b> Vũ trụ &nbsp;|&nbsp; ✌️ <b>2 Ngón:</b> AnhYeuEm &nbsp;|&nbsp; 🤘 <b>Rock:</b> Lion
+            👍 <b>Like:</b> Quà &nbsp;|&nbsp; ☝️ <b>1 Ngón:</b> Vũ trụ &nbsp;|&nbsp; ✌️ <b>2 Ngón:</b> AnhYeuEm &nbsp;|&nbsp; 🤘 <b>Rock:</b> Lion
         </div>
         <button id="btnStart" onclick="startSystem()">START MAGIC</button>
     </div>
@@ -563,7 +563,7 @@
 
                 // B. Gestures based on extensions
                 // Fist: No fingers extended
-                if (!idx && !mid && !ring && !pinky && !thumbUp) { state = 'GIFT'; return; }
+                if (!idx && !mid && !ring && !pinky && !thumbUp) { state = 'TREE'; return; }
 
                 // Open: All extended
                 if (idx && mid && ring && pinky) { state = 'EXPLODE'; return; }
@@ -579,7 +579,7 @@
 
                 // Thumb Up: Only Thumb (and maybe index curled)
                 // Relaxed: Thumb is up, others are down.
-                if (thumbUp && !idx && !mid && !ring && !pinky) { state = 'TREE'; return; }
+                if (thumbUp && !idx && !mid && !ring && !pinky) { state = 'GIFT'; return; }
 
                 // Default fallbacks to avoid sticking
                 // If somewhat closed -> Tree
