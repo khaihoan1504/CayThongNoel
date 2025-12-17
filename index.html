@@ -278,7 +278,8 @@
             scene.fog = new THREE.FogExp2(0x000000, 0.002);
             camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.z = 100;
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setClearColor(0x000000, 0); // nền trong suốt
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             container.appendChild(renderer.domElement);
@@ -411,8 +412,20 @@
             else if (targetState === 'ANHYEUEM') key = 'cntt7';
             else if (targetState === 'LION') key = 'lion';
 
-            const targets = u[key];
-            for (let i = 0; i < positions.length; i++) positions[i] += (targets[i] - positions[i]) * speed;
+            let targets = u[key];
+            // Giãn các hạt ra gấp đôi khi ở trạng thái ANHYEUEM
+            if (targetState === 'ANHYEUEM') {
+                for (let i = 0; i < positions.length; i += 3) {
+                    const tx = u[key][i] * 2;
+                    const ty = u[key][i+1] * 2;
+                    const tz = u[key][i+2] * 2;
+                    positions[i] += (tx - positions[i]) * speed;
+                    positions[i+1] += (ty - positions[i+1]) * speed;
+                    positions[i+2] += (tz - positions[i+2]) * speed;
+                }
+            } else {
+                for (let i = 0; i < positions.length; i++) positions[i] += (targets[i] - positions[i]) * speed;
+            }
             attr.position.needsUpdate = true;
 
             // Rotation & Effects
