@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Merry Chít Mớt CNTT7</title>
+    <title>Merry Chít Mớt ANHYEUEM</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
@@ -181,7 +181,7 @@
         let selectedIndex = 0;
 
         // --- SHAPE MATH ---
-        function getCNTT7Point() {
+        function getANHYEUEMPoint() {
             const char = Math.floor(Math.random() * 5);
             let x = 0, y = 0, z = 0;
             const t = Math.random();
@@ -316,7 +316,7 @@
                 pUniverse.push(Math.cos(spin + (Math.PI * 2 / 3) * arm) * dist, (Math.random() - 0.5) * (100 - dist) / 5, Math.sin(spin + (Math.PI * 2 / 3) * arm) * dist);
 
                 // CNTT7 & Lion
-                const ptC = getCNTT7Point(), ptL = getLionPoint();
+                const ptC = getANHYEUEMPoint(), ptL = getLionPoint();
                 pCNTT7.push(ptC.x, ptC.y, ptC.z); pLion.push(ptL.x, ptL.y, ptL.z);
 
                 pPositions.push(pTree[i * 3], pTree[i * 3 + 1], pTree[i * 3 + 2]);
@@ -378,7 +378,7 @@
             loveMesh = new THREE.Mesh(new THREE.PlaneGeometry(70, 18), new THREE.MeshBasicMaterial({ map: txtTex("I LOVE YOU ❤️", 100, '#FF69B4'), transparent: true, blending: THREE.AdditiveBlending }));
             loveMesh.position.set(0, -20, 20); loveMesh.visible = false; scene.add(loveMesh);
 
-            cntt7Mesh = new THREE.Mesh(new THREE.PlaneGeometry(50, 12), new THREE.MeshBasicMaterial({ map: txtTex("CNTT7 - K17", 100, '#00FFFF'), transparent: true, blending: THREE.AdditiveBlending }));
+            cntt7Mesh = new THREE.Mesh(new THREE.PlaneGeometry(50, 12), new THREE.MeshBasicMaterial({ map: txtTex("ANHYEUEM - K17", 100, '#00FFFF'), transparent: true, blending: THREE.AdditiveBlending }));
             cntt7Mesh.position.set(0, -30, 0); cntt7Mesh.visible = false; scene.add(cntt7Mesh);
         }
 
@@ -392,7 +392,7 @@
             else if (targetState === 'EXPLODE' || targetState === 'PHOTO') key = 'explode';
             else if (targetState === 'GIFT') key = 'gift';
             else if (targetState === 'UNIVERSE') key = 'universe';
-            else if (targetState === 'CNTT7') key = 'cntt7';
+            else if (targetState === 'ANHYEUEM') key = 'cntt7';
             else if (targetState === 'LION') key = 'lion';
 
             const targets = u[key];
@@ -423,7 +423,7 @@
             updateParticleGroup(groupGift, state, speed, time);
 
             titleMesh.visible = (state === 'TREE'); starMesh.visible = (state === 'TREE');
-            loveMesh.visible = (state === 'HEART'); cntt7Mesh.visible = (state === 'CNTT7');
+            loveMesh.visible = (state === 'HEART'); cntt7Mesh.visible = (state === 'ANHYEUEM');
 
             if (state === 'EXPLODE') {
                 photoMeshes.forEach((mesh, i) => {
