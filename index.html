@@ -542,10 +542,7 @@
                 const isExt = (tip, pip) => lm[tip].y < lm[pip].y;
 
                 const idx = isExt(8, 6), mid = isExt(12, 10), ring = isExt(16, 14), pinky = isExt(20, 18);
-                // Thumb is special: Check horizontal distance or if it's "above" the palm center?
-                // Simple Thumb Up: Thumb Tip is highest point (min Y) of thumb.
-                // Or check if Thumb Tip Y < Index MCP Y for "Thumb Up".
-                const thumbUp = lm[4].y < lm[5].y;
+
 
                 // A. Pinch (Photo)
                 const pinchDist = Math.hypot(lm[4].x - lm[8].x, lm[4].y - lm[8].y);
@@ -555,8 +552,9 @@
                 }
 
                 // B. Gestures based on extensions
+
                 // Fist: No fingers extended
-                if (!idx && !mid && !ring && !pinky && !thumbUp) { state = 'TREE'; return; }
+                if (!idx && !mid && !ring && !pinky) { state = 'TREE'; return; }
 
                 // Open: All extended
                 if (idx && mid && ring && pinky) { state = 'EXPLODE'; return; }
