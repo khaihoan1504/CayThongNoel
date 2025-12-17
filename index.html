@@ -531,7 +531,7 @@
                 const pinchDist = Math.hypot(lm[4].x - lm[8].x, lm[4].y - lm[8].y);
                 if (pinchDist < 0.05 && Math.abs(lm[9].x - 0.5) < 0.2) {
                     state = 'PHOTO';
-                    selectedIndex = Math.floor(lm[9].x * 5) % 5; // Rotate photos by hand position
+                    selectedIndex = 0; // Chọn ảnh trên cùng
                     return;
                 }
 
