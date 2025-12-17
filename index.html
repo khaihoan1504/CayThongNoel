@@ -394,7 +394,7 @@
             loveMesh = new THREE.Mesh(new THREE.PlaneGeometry(70, 18), new THREE.MeshBasicMaterial({ map: txtTex("I Love Youuuuuuu ❤️", 100, '#FF69B4'), transparent: true, blending: THREE.AdditiveBlending }));
             loveMesh.position.set(0, -20, 20); loveMesh.visible = false; scene.add(loveMesh);
 
-            cntt7Mesh = new THREE.Mesh(new THREE.PlaneGeometry(50, 12), new THREE.MeshBasicMaterial({ map: txtTex("AnhYeuEm - K17", 100, '#00FFFF'), transparent: true, blending: THREE.AdditiveBlending }));
+            cntt7Mesh = new THREE.Mesh(new THREE.PlaneGeometry(50, 12), new THREE.MeshBasicMaterial({ map: txtTex("Tran Thi Ngoc Huyen", 100, '#00FFFF'), transparent: true, blending: THREE.AdditiveBlending }));
             cntt7Mesh.position.set(0, -30, 0); cntt7Mesh.visible = false; scene.add(cntt7Mesh);
         }
 
@@ -519,23 +519,19 @@
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
 
-                if (results.multiHandLandmarks.length === 0) { state = 'TREE'; document.getElementById('selectedPhoto').style.display = 'none'; return; }
+                if (results.multiHandLandmarks.length === 0) { state = 'TREE'; return; }
 
                 // 1. Two Hands Check -> HEART
                 if (results.multiHandLandmarks.length === 2) {
                     const h1 = results.multiHandLandmarks[0], h2 = results.multiHandLandmarks[1];
                     const distIndex = Math.hypot(h1[8].x - h2[8].x, h1[8].y - h2[8].y);
                     const distThumb = Math.hypot(h1[4].x - h2[4].x, h1[4].y - h2[4].y);
-                    if (distIndex < 0.15 && distThumb < 0.15) { state = 'HEART'; document.getElementById('selectedPhoto').style.display = 'none'; return; }
+                    if (distIndex < 0.15 && distThumb < 0.15) { state = 'HEART'; return; }
                 }
 
                 // 2. One Hand Logic
                 const lm = results.multiHandLandmarks[0];
                 handX = lm[9].x; // update horizontal hand position for rotation control
-
-                selectedIndex = Math.floor(handX * 5) % 5;
-                document.getElementById('selectedPhoto').innerText = `Ảnh ${selectedIndex + 1} được chọn`;
-                document.getElementById('selectedPhoto').style.display = 'block';
 
                 // const cameraLeft = window.innerWidth - 15 - 160;
                 // document.getElementById('photoFrame').style.left = (cameraLeft + selectedIndex * 32) + 'px';
@@ -555,7 +551,6 @@
                 const pinchDist = Math.hypot(lm[4].x - lm[8].x, lm[4].y - lm[8].y);
                 if (pinchDist < 0.05) {
                     state = 'PHOTO';
-                    selectedIndex = Math.floor(lm[9].x * 5) % 5; // Chọn ảnh dựa trên vị trí tay
                     return;
                 }
 
