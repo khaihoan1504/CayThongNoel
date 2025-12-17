@@ -479,7 +479,7 @@
                     mesh.visible = true;
                     if (i === selectedIndex) {
                         mesh.position.lerp(new THREE.Vector3(0, 0, 60), 0.1); mesh.scale.lerp(new THREE.Vector3(6, 6, 6), 0.1);
-                        mesh.lookAt(camera.position); mesh.rotation.z = 0;
+                        mesh.lookAt(camera.position); mesh.rotation.z = handRotY;
                     } else mesh.scale.lerp(new THREE.Vector3(0, 0, 0), 0.1);
                 });
             } else photoMeshes.forEach(m => { m.visible = false; m.scale.set(0, 0, 0); });
