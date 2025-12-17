@@ -112,13 +112,13 @@
         <div class="guide">
             ❤️ <b>2 Hands (Heart):</b> Love<br>
             ✊ <b>Fist:</b> Tree &nbsp;|&nbsp; 🖐 <b>Open:</b> Explode &nbsp;|&nbsp; 👌 <b>Pinch:</b> Photo<br>
+
             👍 <b>Thumb Up:</b> Gift &nbsp;|&nbsp; ☝️ <b>1 Finger:</b> Universe &nbsp;|&nbsp; ✌️ <b>Victory:</b> ANHYEUEM &nbsp;|&nbsp; 🤘 <b>Rock:</b> Lion
-            <b>Rock:</b> Lion
         </div>
         <button id="btnStart" onclick="startSystem()">START MAGIC</button>
     </div>
 
-    <div id="copyright">© Thay Duong DZ</div>
+    <div id="copyright">© Khai Hoan</div>
 
     <div id="canvas-container"></div>
     <video class="input_video" style="display:none"></video>
@@ -378,7 +378,7 @@
             loveMesh = new THREE.Mesh(new THREE.PlaneGeometry(70, 18), new THREE.MeshBasicMaterial({ map: txtTex("I LOVE YOU ❤️", 100, '#FF69B4'), transparent: true, blending: THREE.AdditiveBlending }));
             loveMesh.position.set(0, -20, 20); loveMesh.visible = false; scene.add(loveMesh);
 
-            cntt7Mesh = new THREE.Mesh(new THREE.PlaneGeometry(50, 12), new THREE.MeshBasicMaterial({ map: txtTex("ANHYEUEM - K17", 100, '#00FFFF'), transparent: true, blending: THREE.AdditiveBlending }));
+            cntt7Mesh = new THREE.Mesh(new THREE.PlaneGeometry(50, 12), new THREE.MeshBasicMaterial({ map: txtTex("ANH YEU EM", 100, '#00FFFF'), transparent: true, blending: THREE.AdditiveBlending }));
             cntt7Mesh.position.set(0, -30, 0); cntt7Mesh.visible = false; scene.add(cntt7Mesh);
         }
 
