@@ -434,6 +434,20 @@
             updateParticleGroup(groupRed, state, speed, time, handRotY);
             updateParticleGroup(groupGift, state, speed, time, handRotY);
 
+            // Hiệu ứng đập đập cho trái tim
+            if (state === 'HEART') {
+                const beat = 1 + 0.1 * Math.sin(time * 6); // Đập nhanh
+                groupGold.scale.setScalar(beat);
+                groupRed.scale.setScalar(beat);
+                groupGift.scale.setScalar(beat);
+                loveMesh.scale.setScalar(beat);
+            } else {
+                groupGold.scale.setScalar(1);
+                groupRed.scale.setScalar(1);
+                groupGift.scale.setScalar(1);
+                loveMesh.scale.setScalar(1);
+            }
+
             titleMesh.visible = (state === 'TREE'); starMesh.visible = (state === 'TREE');
             loveMesh.visible = (state === 'HEART'); cntt7Mesh.visible = (state === 'ANHYEUEM');
 
