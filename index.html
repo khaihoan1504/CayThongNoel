@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Merry Chít Mớt ANHYEUEM</title>
+    <title>Merry Chít Mớt</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
@@ -110,10 +110,10 @@
 
     <div id="ui-layer">
         <div class="guide">
-            ❤️ <b>2 Hands (Heart):</b> Love<br>
-            ✊ <b>Fist:</b> Tree &nbsp;|&nbsp; 🖐 <b>Open:</b> Explode &nbsp;|&nbsp; 👌 <b>Pinch:</b> Photo<br>
+            ❤️ <b>2 Tay (Tim):</b> Love<br>
+            ✊ <b>Nắm đấm:</b> Cây &nbsp;|&nbsp; 🖐 <b>Xòe tay:</b> Mở rộng &nbsp;|&nbsp; 👌 <b>OK:</b> Zoom Photo<br>
 
-            👍 <b>Thumb Up:</b> Gift &nbsp;|&nbsp; ☝️ <b>1 Finger:</b> Universe &nbsp;|&nbsp; ✌️ <b>Victory:</b> ANHYEUEM &nbsp;|&nbsp; 🤘 <b>Rock:</b> Lion
+            👍 <b>Like:</b> Quà &nbsp;|&nbsp; ☝️ <b>1 Ngón:</b> Vũ trụ &nbsp;|&nbsp; ✌️ <b>2 Ngón:</b> Sít rịt &nbsp;|&nbsp; 🤘 <b>Rock:</b> Lion
         </div>
         <button id="btnStart" onclick="startSystem()">START MAGIC</button>
     </div>
@@ -133,9 +133,9 @@
         const photoFiles = [
             './image1.jpg',
             './image2.jpg',
-            './image1.jpg',
-            './image2.jpg',
-            './image2.jpg',
+            './image3.jpg',
+            './image4.jpg',
+            './image5.jpg',
         ];
         const photoTextures = [];
         photoFiles.forEach((f, i) => photoTextures[i] = loader.load(f));
@@ -375,7 +375,7 @@
             starMesh = new THREE.Mesh(new THREE.PlaneGeometry(12, 12), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(starCvs), transparent: true, blending: THREE.AdditiveBlending }));
             starMesh.position.set(0, CONFIG.treeHeight / 2 + 2, 0); scene.add(starMesh);
 
-            loveMesh = new THREE.Mesh(new THREE.PlaneGeometry(70, 18), new THREE.MeshBasicMaterial({ map: txtTex("I LOVE YOU ❤️", 100, '#FF69B4'), transparent: true, blending: THREE.AdditiveBlending }));
+            loveMesh = new THREE.Mesh(new THREE.PlaneGeometry(70, 18), new THREE.MeshBasicMaterial({ map: txtTex("I Love Youuuuuuu ❤️", 100, '#FF69B4'), transparent: true, blending: THREE.AdditiveBlending }));
             loveMesh.position.set(0, -20, 20); loveMesh.visible = false; scene.add(loveMesh);
 
             cntt7Mesh = new THREE.Mesh(new THREE.PlaneGeometry(50, 12), new THREE.MeshBasicMaterial({ map: txtTex("Tran Thi Ngoc Huyen", 100, '#00FFFF'), transparent: true, blending: THREE.AdditiveBlending }));
