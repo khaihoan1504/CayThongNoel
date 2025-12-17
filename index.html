@@ -111,9 +111,9 @@
     <div id="ui-layer">
         <div class="guide">
             ❤️ <b>2 Tay (Tim):</b> Love<br>
-            ✊ <b>Nắm đấm:</b> Thu cây &nbsp;|&nbsp; 🖐 <b>Xòe tay:</b> Mở rộng &nbsp;|&nbsp; 👌 <b>OK:</b> Zoom Photo<br>
+            ✊ <b>Nắm đấm:</b> Quà &nbsp;|&nbsp; 🖐 <b>Xòe tay:</b> Mở rộng &nbsp;|&nbsp; 👌 <b>OK:</b> Zoom Photo<br>
 
-            👍 <b>Like:</b> Quà &nbsp;|&nbsp; ☝️ <b>1 Ngón:</b> Vũ trụ &nbsp;|&nbsp; ✌️ <b>2 Ngón:</b> Sít rịt &nbsp;|&nbsp; 🤘 <b>Rock:</b> Lion
+            👍 <b>Like:</b> Thu cây &nbsp;|&nbsp; ☝️ <b>1 Ngón:</b> Vũ trụ &nbsp;|&nbsp; ✌️ <b>2 Ngón:</b> AnhYeuEm &nbsp;|&nbsp; 🤘 <b>Rock:</b> Lion
         </div>
         <button id="btnStart" onclick="startSystem()">START MAGIC</button>
     </div>
@@ -184,6 +184,7 @@
         let scene, camera, renderer;
         let groupGold, groupRed, groupGift;
         let photoMeshes = [];
+        let frameMeshes = [];
         let titleMesh, starMesh, loveMesh, cntt7Mesh;
 
         let state = 'TREE';
@@ -248,6 +249,7 @@
                     else { x = 75; y = 10 - ((t - 0.75) / 0.25) * 20; } // Xuống phải
                     break;
             }
+            x *= 1.2;
             return { x, y, z: (Math.random() - 0.5) * 2 };
         }
 
@@ -361,6 +363,12 @@
                 const mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ map: photoTextures[i], side: THREE.DoubleSide }));
                 mesh.visible = false; mesh.scale.set(0, 0, 0);
                 scene.add(mesh); photoMeshes.push(mesh);
+
+                const frameGeo = new THREE.PlaneGeometry(9, 9);
+                const frameMat = new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.5, side: THREE.DoubleSide });
+                const frame = new THREE.Mesh(frameGeo, frameMat);
+                frame.visible = false;
+                scene.add(frame); frameMeshes.push(frame);
             }
         }
 
@@ -388,7 +396,7 @@
             loveMesh = new THREE.Mesh(new THREE.PlaneGeometry(70, 18), new THREE.MeshBasicMaterial({ map: txtTex("I Love Youuuuuuu ❤️", 100, '#FF69B4'), transparent: true, blending: THREE.AdditiveBlending }));
             loveMesh.position.set(0, -20, 20); loveMesh.visible = false; scene.add(loveMesh);
 
-            cntt7Mesh = new THREE.Mesh(new THREE.PlaneGeometry(50, 12), new THREE.MeshBasicMaterial({ map: txtTex("Tran Thi Ngoc Huyen", 100, '#00FFFF'), transparent: true, blending: THREE.AdditiveBlending }));
+            cntt7Mesh = new THREE.Mesh(new THREE.PlaneGeometry(50, 12), new THREE.MeshBasicMaterial({ map: txtTex("AnhYeuEm - K17", 100, '#00FFFF'), transparent: true, blending: THREE.AdditiveBlending }));
             cntt7Mesh.position.set(0, -30, 0); cntt7Mesh.visible = false; scene.add(cntt7Mesh);
         }
 
@@ -432,14 +440,14 @@
 
         function animate() {
             requestAnimationFrame(animate);
-            const time = Date.now() * 0.001, speed = 0.06;
+            const time = Date.now() * 0.001, speed = (state === 'ANHYEUEM') ? 0.03 : 0.06;
             const handRotY = (handX - 0.5) * HAND_SENSITIVITY; // convert normalized handX to rotation target (sensitivity applied)
             updateParticleGroup(groupGold, state, speed, time, handRotY);
             updateParticleGroup(groupRed, state, speed, time, handRotY);
             updateParticleGroup(groupGift, state, speed, time, handRotY);
 
             // Hiệu ứng đập đập cho trái tim
-            if (state === 'HEART') {
+            if (state === 'HEART' || state === 'ANHYEUEM') {
                 const beat = 1 + 0.1 * Math.sin(time * 6); // Đập nhanh
                 groupGold.scale.setScalar(beat);
                 groupRed.scale.setScalar(beat);
@@ -456,6 +464,7 @@
             loveMesh.visible = (state === 'HEART'); cntt7Mesh.visible = (state === 'ANHYEUEM');
 
             if (state === 'EXPLODE') {
+                frameMeshes.forEach(f => f.visible = false);
                 titleMesh.visible = false; starMesh.visible = false; loveMesh.visible = false;
                 const baseAngle = groupGold.rotation.y;
                 const angleStep = (Math.PI * 2) / 5;
@@ -468,6 +477,9 @@
                     const y = Math.sin(time + i) * 3;
                     mesh.position.lerp(new THREE.Vector3(x, y, z), 0.1);
                     mesh.lookAt(camera.position);
+                    frameMeshes[i].position.copy(mesh.position);
+                    frameMeshes[i].rotation.copy(mesh.rotation);
+                    frameMeshes[i].lookAt(camera.position);
                     if (z > maxZ) { maxZ = z; bestIdx = i; }
                     if (z > 5) {
                         const ds = 1.0 + (z/(CONFIG.treeBaseRadius*0.85))*0.8;
@@ -477,6 +489,7 @@
                     }
                 });
                 selectedIndex = bestIdx;
+                frameMeshes.forEach((f, i) => f.visible = (i === bestIdx));
 
             } else if (state === 'PHOTO') {
                 photoMeshes.forEach((mesh, i) => {
@@ -487,6 +500,7 @@
                     } else mesh.scale.lerp(new THREE.Vector3(0, 0, 0), 0.1);
                 });
             } else photoMeshes.forEach(m => { m.visible = false; m.scale.set(0, 0, 0); });
+            frameMeshes.forEach(f => f.visible = false);
 
             renderer.render(scene, camera);
         }
@@ -549,7 +563,7 @@
 
                 // B. Gestures based on extensions
                 // Fist: No fingers extended
-                if (!idx && !mid && !ring && !pinky && !thumbUp) { state = 'TREE'; return; }
+                if (!idx && !mid && !ring && !pinky && !thumbUp) { state = 'GIFT'; return; }
 
                 // Open: All extended
                 if (idx && mid && ring && pinky) { state = 'EXPLODE'; return; }
@@ -565,7 +579,7 @@
 
                 // Thumb Up: Only Thumb (and maybe index curled)
                 // Relaxed: Thumb is up, others are down.
-                if (thumbUp && !idx && !mid && !ring && !pinky) { state = 'GIFT'; return; }
+                if (thumbUp && !idx && !mid && !ring && !pinky) { state = 'TREE'; return; }
 
                 // Default fallbacks to avoid sticking
                 // If somewhat closed -> Tree
