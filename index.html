@@ -139,27 +139,27 @@
         canvas.width = width;
         canvas.height = height;
         let snowflakes = [];
-        const SNOWFLAKE_COUNT = Math.floor(width * height / 1800);
+        let SNOWFLAKE_COUNT = Math.max(40, Math.floor(width * height / 6000)); // giảm số lượng bông tuyết
         function randomBetween(a, b) { return a + Math.random() * (b - a); }
         function createSnowflake() {
             return {
                 x: randomBetween(0, width),
                 y: randomBetween(-height, 0),
-                r: randomBetween(1.2, 3.5),
-                d: randomBetween(0.7, 1.5),
-                o: randomBetween(0.4, 0.9),
-                s: randomBetween(0.5, 1.5),
-                w: randomBetween(-0.6, 0.6)
+                r: randomBetween(1.2, 2.2), // nhỏ hơn
+                d: randomBetween(0.7, 1.2),
+                o: randomBetween(0.25, 0.6), // alpha thấp hơn
+                s: randomBetween(0.5, 1.1),
+                w: randomBetween(-0.4, 0.4)
             };
         }
         function resetSnowflake(flake) {
             flake.x = randomBetween(0, width);
             flake.y = randomBetween(-20, 0);
-            flake.r = randomBetween(1.2, 3.5);
-            flake.d = randomBetween(0.7, 1.5);
-            flake.o = randomBetween(0.4, 0.9);
-            flake.s = randomBetween(0.5, 1.5);
-            flake.w = randomBetween(-0.6, 0.6);
+            flake.r = randomBetween(1.2, 2.2);
+            flake.d = randomBetween(0.7, 1.2);
+            flake.o = randomBetween(0.25, 0.6);
+            flake.s = randomBetween(0.5, 1.1);
+            flake.w = randomBetween(-0.4, 0.4);
         }
         function drawSnowflakes() {
             ctx.clearRect(0, 0, width, height);
@@ -172,7 +172,7 @@
                 ctx.arc(f.x, f.y, f.r, 0, 2 * Math.PI);
                 ctx.fillStyle = '#fff';
                 ctx.shadowColor = '#fff';
-                ctx.shadowBlur = 8;
+                ctx.shadowBlur = 2; // giảm shadowBlur
                 ctx.fill();
             }
             ctx.restore();
@@ -180,7 +180,7 @@
         function updateSnowflakes() {
             for (let i = 0; i < snowflakes.length; i++) {
                 const f = snowflakes[i];
-                f.y += f.s * f.d + 0.6;
+                f.y += f.s * f.d + 0.5;
                 f.x += f.w;
                 if (f.y > height + 8 || f.x < -8 || f.x > width + 8) {
                     resetSnowflake(f);
@@ -193,10 +193,14 @@
             requestAnimationFrame(animate);
         }
         function resize() {
-            width = window.innerWidth;
-            height = window.innerHeight;
+            let newWidth = window.innerWidth;
+            let newHeight = window.innerHeight;
+            if (newWidth === width && newHeight === height) return;
+            width = newWidth;
+            height = newHeight;
             canvas.width = width;
             canvas.height = height;
+            SNOWFLAKE_COUNT = Math.max(40, Math.floor(width * height / 6000));
             snowflakes = [];
             for (let i = 0; i < SNOWFLAKE_COUNT; i++) snowflakes.push(createSnowflake());
         }
