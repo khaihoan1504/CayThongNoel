@@ -108,6 +108,9 @@
 
 <body>
 
+    <!-- Snow effect canvas -->
+    <canvas id="snow-canvas" style="position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:10;"></canvas>
+
     <div id="ui-layer">
         <div class="guide">
             ❤️ <b>2 Tay (Tim):</b> Love<br>
@@ -127,6 +130,80 @@
     <canvas id="camera-preview"></canvas>
 
     <script>
+    // Snow effect
+    (function snowEffect() {
+        const canvas = document.getElementById('snow-canvas');
+        const ctx = canvas.getContext('2d');
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+        let snowflakes = [];
+        const SNOWFLAKE_COUNT = Math.floor(width * height / 1800);
+        function randomBetween(a, b) { return a + Math.random() * (b - a); }
+        function createSnowflake() {
+            return {
+                x: randomBetween(0, width),
+                y: randomBetween(-height, 0),
+                r: randomBetween(1.2, 3.5),
+                d: randomBetween(0.7, 1.5),
+                o: randomBetween(0.4, 0.9),
+                s: randomBetween(0.5, 1.5),
+                w: randomBetween(-0.6, 0.6)
+            };
+        }
+        function resetSnowflake(flake) {
+            flake.x = randomBetween(0, width);
+            flake.y = randomBetween(-20, 0);
+            flake.r = randomBetween(1.2, 3.5);
+            flake.d = randomBetween(0.7, 1.5);
+            flake.o = randomBetween(0.4, 0.9);
+            flake.s = randomBetween(0.5, 1.5);
+            flake.w = randomBetween(-0.6, 0.6);
+        }
+        function drawSnowflakes() {
+            ctx.clearRect(0, 0, width, height);
+            ctx.save();
+            ctx.globalCompositeOperation = 'lighter';
+            for (let i = 0; i < snowflakes.length; i++) {
+                const f = snowflakes[i];
+                ctx.globalAlpha = f.o;
+                ctx.beginPath();
+                ctx.arc(f.x, f.y, f.r, 0, 2 * Math.PI);
+                ctx.fillStyle = '#fff';
+                ctx.shadowColor = '#fff';
+                ctx.shadowBlur = 8;
+                ctx.fill();
+            }
+            ctx.restore();
+        }
+        function updateSnowflakes() {
+            for (let i = 0; i < snowflakes.length; i++) {
+                const f = snowflakes[i];
+                f.y += f.s * f.d + 0.6;
+                f.x += f.w;
+                if (f.y > height + 8 || f.x < -8 || f.x > width + 8) {
+                    resetSnowflake(f);
+                }
+            }
+        }
+        function animate() {
+            drawSnowflakes();
+            updateSnowflakes();
+            requestAnimationFrame(animate);
+        }
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            snowflakes = [];
+            for (let i = 0; i < SNOWFLAKE_COUNT; i++) snowflakes.push(createSnowflake());
+        }
+        window.addEventListener('resize', resize);
+        resize();
+        animate();
+    })();
         const MUSIC_URL = "./audio.mp3";
         let bgMusic = new Audio(MUSIC_URL);
         bgMusic.loop = true; bgMusic.volume = 1.0;
