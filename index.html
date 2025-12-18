@@ -143,28 +143,28 @@
         setCanvasSize();
         let width = canvas.width;
         let height = canvas.height;
+        let SNOWFLAKE_COUNT = Math.max(20, Math.floor(width * height / 12000)); // giảm số lượng tối đa
         let snowflakes = [];
-        let SNOWFLAKE_COUNT = Math.max(40, Math.floor(width * height / 6000));
         function randomBetween(a, b) { return a + Math.random() * (b - a); }
         function createSnowflake() {
             return {
                 x: randomBetween(0, width),
                 y: randomBetween(-height, 0),
-                r: randomBetween(1.2, 2.2),
-                d: randomBetween(0.7, 1.2),
-                o: randomBetween(0.25, 0.6),
-                s: randomBetween(0.5, 1.1),
-                w: randomBetween(-0.4, 0.4)
+                r: randomBetween(1.2, 1.8), // nhỏ hơn nữa
+                d: randomBetween(0.7, 1.1),
+                o: randomBetween(0.18, 0.38), // alpha thấp hơn
+                s: randomBetween(0.4, 0.9),
+                w: randomBetween(-0.25, 0.25)
             };
         }
         function resetSnowflake(flake) {
             flake.x = randomBetween(0, width);
             flake.y = randomBetween(-20, 0);
-            flake.r = randomBetween(1.2, 2.2);
-            flake.d = randomBetween(0.7, 1.2);
-            flake.o = randomBetween(0.25, 0.6);
-            flake.s = randomBetween(0.5, 1.1);
-            flake.w = randomBetween(-0.4, 0.4);
+            flake.r = randomBetween(1.2, 1.8);
+            flake.d = randomBetween(0.7, 1.1);
+            flake.o = randomBetween(0.18, 0.38);
+            flake.s = randomBetween(0.4, 0.9);
+            flake.w = randomBetween(-0.25, 0.25);
         }
         function drawSnowflakes() {
             ctx.clearRect(0, 0, width, height);
@@ -177,7 +177,7 @@
                 ctx.arc(f.x, f.y, f.r, 0, 2 * Math.PI);
                 ctx.fillStyle = '#fff';
                 ctx.shadowColor = '#fff';
-                ctx.shadowBlur = 2;
+                ctx.shadowBlur = 0; // tắt shadowBlur
                 ctx.fill();
             }
             ctx.restore();
@@ -185,29 +185,32 @@
         function updateSnowflakes() {
             for (let i = 0; i < snowflakes.length; i++) {
                 const f = snowflakes[i];
-                f.y += f.s * f.d + 0.5;
+                f.y += f.s * f.d + 0.4;
                 f.x += f.w;
                 if (f.y > height + 8 || f.x < -8 || f.x > width + 8) {
                     resetSnowflake(f);
                 }
             }
         }
+        let running = true;
         function animate() {
+            if (!running) return;
             drawSnowflakes();
             updateSnowflakes();
-            requestAnimationFrame(animate);
+            setTimeout(animate, 40); // ~25fps, giảm tần suất vẽ
         }
         function resize() {
             setCanvasSize();
             width = canvas.width;
             height = canvas.height;
-            SNOWFLAKE_COUNT = Math.max(40, Math.floor(width * height / 6000));
+            SNOWFLAKE_COUNT = Math.max(20, Math.floor(width * height / 12000));
             snowflakes = [];
             for (let i = 0; i < SNOWFLAKE_COUNT; i++) snowflakes.push(createSnowflake());
+            running = true;
+            animate();
         }
         window.addEventListener('resize', resize);
         resize();
-        animate();
     })();
         const MUSIC_URL = "./audio.mp3";
         let bgMusic = new Audio(MUSIC_URL);
