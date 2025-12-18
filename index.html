@@ -108,9 +108,6 @@
 
 <body>
 
-    <!-- Snow effect canvas -->
-    <canvas id="snow-canvas" style="position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:999999;"></canvas>
-
     <div id="ui-layer">
         <div class="guide">
             ❤️ <b>2 Tay (Tim):</b> Love<br>
@@ -130,87 +127,6 @@
     <canvas id="camera-preview"></canvas>
 
     <script>
-    // Snow effect
-    (function snowEffect() {
-        const canvas = document.getElementById('snow-canvas');
-        const ctx = canvas.getContext('2d');
-        function setCanvasSize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            canvas.style.width = '100vw';
-            canvas.style.height = '100vh';
-        }
-        setCanvasSize();
-        let width = canvas.width;
-        let height = canvas.height;
-        let SNOWFLAKE_COUNT = Math.max(20, Math.floor(width * height / 12000));
-        let snowflakes = [];
-        for (let i = 0; i < SNOWFLAKE_COUNT; i++) snowflakes.push(createSnowflake());
-        function randomBetween(a, b) { return a + Math.random() * (b - a); }
-        function createSnowflake() {
-            return {
-                x: randomBetween(0, width),
-                y: randomBetween(-height, 0),
-                r: randomBetween(1.2, 1.8), // nhỏ hơn nữa
-                d: randomBetween(0.7, 1.1),
-                o: randomBetween(0.18, 0.38), // alpha thấp hơn
-                s: randomBetween(0.4, 0.9),
-                w: randomBetween(-0.25, 0.25)
-            };
-        }
-        function resetSnowflake(flake) {
-            flake.x = randomBetween(0, width);
-            flake.y = randomBetween(-20, 0);
-            flake.r = randomBetween(1.2, 1.8);
-            flake.d = randomBetween(0.7, 1.1);
-            flake.o = randomBetween(0.18, 0.38);
-            flake.s = randomBetween(0.4, 0.9);
-            flake.w = randomBetween(-0.25, 0.25);
-        }
-        function drawSnowflakes() {
-            ctx.clearRect(0, 0, width, height);
-            ctx.save();
-            ctx.globalCompositeOperation = 'lighter';
-            for (let i = 0; i < snowflakes.length; i++) {
-                const f = snowflakes[i];
-                ctx.globalAlpha = f.o;
-                ctx.beginPath();
-                ctx.arc(f.x, f.y, f.r, 0, 2 * Math.PI);
-                ctx.fillStyle = '#fff';
-                ctx.shadowColor = '#fff';
-                ctx.shadowBlur = 0; // tắt shadowBlur
-                ctx.fill();
-            }
-            ctx.restore();
-        }
-        function updateSnowflakes() {
-            for (let i = 0; i < snowflakes.length; i++) {
-                const f = snowflakes[i];
-                f.y += f.s * f.d + 0.4;
-                f.x += f.w;
-                if (f.y > height + 8 || f.x < -8 || f.x > width + 8) {
-                    resetSnowflake(f);
-                }
-            }
-        }
-        let running = true;
-        function animate() {
-            if (!running) return;
-            drawSnowflakes();
-            updateSnowflakes();
-            setTimeout(animate, 40); // ~25fps, giảm tần suất vẽ
-        }
-        function resize() {
-            setCanvasSize();
-            width = canvas.width;
-            height = canvas.height;
-            SNOWFLAKE_COUNT = Math.max(20, Math.floor(width * height / 12000));
-            snowflakes = [];
-            for (let i = 0; i < SNOWFLAKE_COUNT; i++) snowflakes.push(createSnowflake());
-        }
-        window.addEventListener('resize', resize);
-        animate();
-    })();
         const MUSIC_URL = "./audio.mp3";
         let bgMusic = new Audio(MUSIC_URL);
         bgMusic.loop = true; bgMusic.volume = 1.0;
