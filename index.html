@@ -126,6 +126,9 @@
     <video class="input_video" style="display:none"></video>
     <canvas id="camera-preview"></canvas>
 
+        <!-- Snow effect canvas -->
+        <canvas id="snow-canvas" style="position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:999999;"></canvas>
+
     <script>
         const MUSIC_URL = "./audio.mp3";
         let bgMusic = new Audio(MUSIC_URL);
@@ -447,9 +450,6 @@
                 let b = 0.8 + 0.4 * Math.sin(time * (key === 'explode' ? 15 : 5) + u.phases[i]);
                 if (targetState === 'HEART' || targetState === 'CNTT7') b = 1.0;
                 colors[i * 3] = u.baseColor.r * b; colors[i * 3 + 1] = u.baseColor.g * b; colors[i * 3 + 2] = u.baseColor.b * b;
-                sizes[i] = u.baseSize * (1 + 0.25 * Math.sin(time * 6 + u.phases[i])); // thêm hiệu ứng size nhấp nháy
-            }
-            attr.color.needsUpdate = true; attr.size.needsUpdate = true;
         }
 
         function animate() {
