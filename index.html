@@ -109,7 +109,7 @@
 <body>
 
     <!-- Snow effect canvas -->
-    <canvas id="snow-canvas" style="position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:10;"></canvas>
+    <canvas id="snow-canvas" style="position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:999999;"></canvas>
 
     <div id="ui-layer">
         <div class="guide">
@@ -134,20 +134,25 @@
     (function snowEffect() {
         const canvas = document.getElementById('snow-canvas');
         const ctx = canvas.getContext('2d');
-        let width = window.innerWidth;
-        let height = window.innerHeight;
-        canvas.width = width;
-        canvas.height = height;
+        function setCanvasSize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            canvas.style.width = '100vw';
+            canvas.style.height = '100vh';
+        }
+        setCanvasSize();
+        let width = canvas.width;
+        let height = canvas.height;
         let snowflakes = [];
-        let SNOWFLAKE_COUNT = Math.max(40, Math.floor(width * height / 6000)); // giảm số lượng bông tuyết
+        let SNOWFLAKE_COUNT = Math.max(40, Math.floor(width * height / 6000));
         function randomBetween(a, b) { return a + Math.random() * (b - a); }
         function createSnowflake() {
             return {
                 x: randomBetween(0, width),
                 y: randomBetween(-height, 0),
-                r: randomBetween(1.2, 2.2), // nhỏ hơn
+                r: randomBetween(1.2, 2.2),
                 d: randomBetween(0.7, 1.2),
-                o: randomBetween(0.25, 0.6), // alpha thấp hơn
+                o: randomBetween(0.25, 0.6),
                 s: randomBetween(0.5, 1.1),
                 w: randomBetween(-0.4, 0.4)
             };
@@ -172,7 +177,7 @@
                 ctx.arc(f.x, f.y, f.r, 0, 2 * Math.PI);
                 ctx.fillStyle = '#fff';
                 ctx.shadowColor = '#fff';
-                ctx.shadowBlur = 2; // giảm shadowBlur
+                ctx.shadowBlur = 2;
                 ctx.fill();
             }
             ctx.restore();
@@ -193,13 +198,9 @@
             requestAnimationFrame(animate);
         }
         function resize() {
-            let newWidth = window.innerWidth;
-            let newHeight = window.innerHeight;
-            if (newWidth === width && newHeight === height) return;
-            width = newWidth;
-            height = newHeight;
-            canvas.width = width;
-            canvas.height = height;
+            setCanvasSize();
+            width = canvas.width;
+            height = canvas.height;
             SNOWFLAKE_COUNT = Math.max(40, Math.floor(width * height / 6000));
             snowflakes = [];
             for (let i = 0; i < SNOWFLAKE_COUNT; i++) snowflakes.push(createSnowflake());
