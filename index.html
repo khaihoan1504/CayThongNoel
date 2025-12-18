@@ -166,12 +166,26 @@
             gift: createCustomTexture('gift')
         };
 
+        // Snow texture for soft round flakes
+        function createSnowTexture() {
+            const cvs = document.createElement('canvas'); cvs.width = 64; cvs.height = 64;
+            const ctx = cvs.getContext('2d');
+            const grd = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+            grd.addColorStop(0, 'rgba(220,240,255,1)');
+            grd.addColorStop(0.75, 'rgba(200,230,255,0.6)');
+            grd.addColorStop(1, 'rgba(290,255,255,0)');
+            ctx.fillStyle = grd; ctx.fillRect(0, 0, 64, 64);
+            const t = new THREE.CanvasTexture(cvs); t.needsUpdate = true; return t;
+        }
+        textures.snow = createSnowTexture();
+
         const CONFIG = {
             goldCount: 2200,
             redCount: 400,
             giftCount: 200,
             treeHeight: 70,
-            treeBaseRadius: 35
+            treeBaseRadius: 35,
+            snowCount: 900 // number of snow particles (adjust to taste)
         };
 
         // Hand control sensitivity: increase to make horizontal hand movement more responsive
@@ -184,6 +198,7 @@
         let photoMeshes = [];
         let frameMeshes = [];
         let titleMesh, starMesh, loveMesh, cntt7Mesh;
+        let snowSystem; // snow particle system
 
         let state = 'TREE';
         let selectedIndex = 0;
@@ -292,6 +307,7 @@
 
             createPhotos();
             createDecorations();
+            createSnow();
             animate();
         }
 
@@ -401,6 +417,34 @@
             cntt7Mesh.position.set(0, -30, 0); cntt7Mesh.visible = false; scene.add(cntt7Mesh);
         }
 
+        // --- Snow ---
+        function createSnow() {
+            const count = CONFIG.snowCount;
+            const positions = new Float32Array(count * 3);
+            const speeds = new Float32Array(count);
+            for (let i = 0; i < count; i++) {
+                positions[i * 3] = (Math.random() - 0.5) * 400;           // x
+                positions[i * 3 + 1] = Math.random() * 220 - 40;         // y
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 400;      // z
+                speeds[i] = 0.3 + Math.random() * 1.2;                   // fall speed
+            }
+            const geo = new THREE.BufferGeometry();
+            geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geo.setAttribute('speed', new THREE.BufferAttribute(speeds, 1));
+            const mat = new THREE.PointsMaterial({
+                size: 4.0,
+                map: textures.snow,
+                transparent: true,
+                opacity: 0.95,
+                depthWrite: false,
+                blending: THREE.NormalBlending,
+                sizeAttenuation: true
+            });
+            snowSystem = new THREE.Points(geo, mat);
+            snowSystem.frustumCulled = false;
+            scene.add(snowSystem);
+        }
+
         function updateParticleGroup(group, targetState, speed, time, handRotY) {
             const attr = group.geometry.attributes;
             const positions = attr.position.array, colors = attr.color.array, sizes = attr.size.array;
@@ -502,6 +546,27 @@
                 });
             } else photoMeshes.forEach(m => { m.visible = false; m.scale.set(0, 0, 0); });
             frameMeshes.forEach(f => f.visible = false);
+
+            // --- Snow update ---
+            if (snowSystem) {
+                const pos = snowSystem.geometry.attributes.position.array;
+                const spd = snowSystem.geometry.attributes.speed.array;
+                const count = pos.length / 3;
+                const wind = Math.sin(time * 0.35) * 0.6; // gentle wind
+                for (let i = 0; i < count; i++) {
+                    const ix = i * 3, iy = ix + 1, iz = ix + 2;
+                    pos[iy] -= spd[i] * (0.6 + Math.sin(time * 0.5 + i) * 0.2); // fall
+                    pos[ix] += wind * (0.4 + Math.sin(i) * 0.1);
+                    pos[iz] += Math.cos(time * 0.2 + i) * 0.01;
+                    if (pos[iy] < -80) { // respawn at top
+                        pos[iy] = 160 + Math.random() * 60;
+                        pos[ix] = (Math.random() - 0.5) * 400;
+                        pos[iz] = (Math.random() - 0.5) * 400;
+                    }
+                }
+                snowSystem.geometry.attributes.position.needsUpdate = true;
+                snowSystem.rotation.y += 0.0006;
+            }
 
             renderer.render(scene, camera);
         }
