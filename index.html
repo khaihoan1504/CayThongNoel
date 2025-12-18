@@ -143,8 +143,9 @@
         setCanvasSize();
         let width = canvas.width;
         let height = canvas.height;
-        let SNOWFLAKE_COUNT = Math.max(20, Math.floor(width * height / 12000)); // giảm số lượng tối đa
+        let SNOWFLAKE_COUNT = Math.max(20, Math.floor(width * height / 12000));
         let snowflakes = [];
+        for (let i = 0; i < SNOWFLAKE_COUNT; i++) snowflakes.push(createSnowflake());
         function randomBetween(a, b) { return a + Math.random() * (b - a); }
         function createSnowflake() {
             return {
@@ -206,11 +207,9 @@
             SNOWFLAKE_COUNT = Math.max(20, Math.floor(width * height / 12000));
             snowflakes = [];
             for (let i = 0; i < SNOWFLAKE_COUNT; i++) snowflakes.push(createSnowflake());
-            running = true;
-            animate();
         }
         window.addEventListener('resize', resize);
-        resize();
+        animate();
     })();
         const MUSIC_URL = "./audio.mp3";
         let bgMusic = new Audio(MUSIC_URL);
