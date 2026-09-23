@@ -237,59 +237,49 @@
             let x = 0, y = 0, z = 0;
             const t = Math.random();
             switch (char) {
-                case 0: // A
-                    // Vị trí x trung tâm khoảng -70
-                    if (t < 0.4) { x = -75 + t / 0.4 * 5; y = -10 + t / 0.4 * 20; } // Nét lên
-                    else if (t < 0.8) { x = -70 + (t - 0.4) / 0.4 * 5; y = 10 - (t - 0.4) / 0.4 * 20; } // Nét xuống
-                    else { x = -72.5 + (t - 0.8) / 0.2 * 5; y = 0; } // Gạch ngang
+                case 0: // T
+                    if (t < 0.5) { x = -70; y = -10 + t / 0.5 * 20; }
+                    else { x = -75 + (t - 0.5) / 0.5 * 10; y = 10; }
                     break;
-                case 1: // N
-                    // Vị trí x trung tâm khoảng -50
-                    if (t < 0.33) { x = -55; y = -10 + (t / 0.33) * 20; } // Lên
-                    else if (t < 0.66) { x = -55 + ((t - 0.33) / 0.33) * 10; y = 10 - ((t - 0.33) / 0.33) * 20; } // Chéo xuống
-                    else { x = -45; y = -10 + ((t - 0.66) / 0.34) * 20; } // Lên
+                case 1: // R
+                    if (t < 0.4) { x = -55; y = -10 + t / 0.4 * 20; }
+                    else if (t < 0.6) { x = -55 + (t - 0.4) / 0.2 * 8; y = 10; }
+                    else if (t < 0.75) { x = -47; y = 10 - (t - 0.6) / 0.15 * 10; }
+                    else if (t < 0.88) { x = -55 + (t - 0.75) / 0.13 * 8; y = 0; }
+                    else { x = -47 + (t - 0.88) / 0.12 * 2; y = -(t - 0.88) / 0.12 * 10; }
                     break;
-                case 2: // H
-                    // Vị trí x trung tâm khoảng -30
-                    if (t < 0.33) { x = -35; y = 10 - (t / 0.33) * 20; } // Cột trái
-                    else if (t < 0.66) { x = -25; y = 10 - ((t - 0.33) / 0.33) * 20; } // Cột phải
-                    else { x = -35 + ((t - 0.66) / 0.34) * 10; y = 0; } // Gạch giữa
+                case 2: // U
+                    if (t < 0.33) { x = -35; y = 10 - t / 0.33 * 20; }
+                    else if (t < 0.66) { x = -35 + (t - 0.33) / 0.33 * 10; y = -10; }
+                    else { x = -25; y = -10 + (t - 0.66) / 0.34 * 20; }
                     break;
-                case 3: // Y
-                    // Vị trí x trung tâm khoảng -10
-                    if (t < 0.33) { x = -15 + (t / 0.33) * 5; y = 10 - (t / 0.33) * 10; } // Chéo trái
-                    else if (t < 0.66) { x = -5 - ((t - 0.33) / 0.33) * 5; y = 10 - ((t - 0.33) / 0.33) * 10; } // Chéo phải
-                    else { x = -10; y = ((t - 0.66) / 0.34) * -10; } // Chân
+                case 3: // N
+                    if (t < 0.33) { x = -15; y = -10 + t / 0.33 * 20; }
+                    else if (t < 0.66) { x = -15 + (t - 0.33) / 0.33 * 10; y = 10 - (t - 0.33) / 0.33 * 20; }
+                    else { x = -5; y = -10 + (t - 0.66) / 0.34 * 20; }
                     break;
-                case 4: // E
-                    // Vị trí x trung tâm khoảng 10
-                    if (t < 0.3) { x = 5; y = 10 - (t / 0.3) * 20; } // Cột dọc
-                    else if (t < 0.55) { x = 5 + ((t - 0.3) / 0.25) * 10; y = 10; } // Ngang trên
-                    else if (t < 0.8) { x = 5 + ((t - 0.55) / 0.25) * 8; y = 0; } // Ngang giữa
-                    else { x = 5 + ((t - 0.8) / 0.2) * 10; y = -10; } // Ngang dưới
+                case 4: // G
+                    if (t < 0.25) { x = 15 - t / 0.25 * 10; y = 10; }
+                    else if (t < 0.5) { x = 5; y = 10 - (t - 0.25) / 0.25 * 20; }
+                    else if (t < 0.7) { x = 5 + (t - 0.5) / 0.2 * 10; y = -10; }
+                    else if (t < 0.85) { x = 15; y = -10 + (t - 0.7) / 0.15 * 10; }
+                    else { x = 15 - (t - 0.85) / 0.15 * 5; y = 0; }
                     break;
-                case 5: // U
-                    // Vị trí x trung tâm khoảng 30
-                    if (t < 0.33) { x = 25; y = 10 - (t / 0.33) * 20; } // Xuống trái
-                    else if (t < 0.66) { x = 25 + ((t - 0.33) / 0.33) * 10; y = -10; } // Đáy ngang
-                    else { x = 35; y = -10 + ((t - 0.66) / 0.34) * 20; } // Lên phải
+                case 5: // T
+                    if (t < 0.5) { x = 30; y = -10 + t / 0.5 * 20; }
+                    else { x = 25 + (t - 0.5) / 0.5 * 10; y = 10; }
                     break;
-                case 6: // E
-                    // Vị trí x trung tâm khoảng 50 (Copy logic chữ E trên và cộng thêm offset X)
-                    if (t < 0.3) { x = 45; y = 10 - (t / 0.3) * 20; }
-                    else if (t < 0.55) { x = 45 + ((t - 0.3) / 0.25) * 10; y = 10; }
-                    else if (t < 0.8) { x = 45 + ((t - 0.55) / 0.25) * 8; y = 0; }
-                    else { x = 45 + ((t - 0.8) / 0.2) * 10; y = -10; }
+                case 6: // H
+                    if (t < 0.33) { x = 45; y = 10 - t / 0.33 * 20; }
+                    else if (t < 0.66) { x = 55; y = 10 - (t - 0.33) / 0.33 * 20; }
+                    else { x = 45 + (t - 0.66) / 0.34 * 10; y = 0; }
                     break;
-                case 7: // M
-                    // Vị trí x trung tâm khoảng 70
-                    if (t < 0.25) { x = 65; y = -10 + (t / 0.25) * 20; } // Lên trái
-                    else if (t < 0.5) { x = 65 + ((t - 0.25) / 0.25) * 5; y = 10 - ((t - 0.25) / 0.25) * 10; } // Xuống giữa
-                    else if (t < 0.75) { x = 70 + ((t - 0.5) / 0.25) * 5; y = ((t - 0.5) / 0.25) * 10; } // Lên phải
-                    else { x = 75; y = 10 - ((t - 0.75) / 0.25) * 20; } // Xuống phải
+                case 7: // U
+                    if (t < 0.33) { x = 65; y = 10 - t / 0.33 * 20; }
+                    else if (t < 0.66) { x = 65 + (t - 0.33) / 0.33 * 10; y = -10; }
+                    else { x = 75; y = -10 + (t - 0.66) / 0.34 * 20; }
                     break;
             }
-            x *= 1.0;
             x *= 1.25;
             y *= 1.25;
             return { x, y, z: (Math.random() - 0.5) * 2 };
@@ -298,20 +288,41 @@
         function getLionPoint() {
             const r = Math.random();
             let x, y, z;
-            if (r < 0.6) {
-                const ang = Math.random() * Math.PI * 2;
-                const rad = 20 + Math.random() * 15;
-                x = Math.cos(ang) * rad; y = Math.sin(ang) * rad; z = (Math.random() - 0.5) * 10;
-            } else if (r < 0.9) {
+            if (r < 0.35) {
+                // Đầu lân - hình tròn lớn
                 const phi = Math.acos(2 * Math.random() - 1);
                 const theta = Math.random() * Math.PI * 2;
-                const rad = 18 * Math.pow(Math.random(), 0.3);
-                x = rad * Math.sin(phi) * Math.cos(theta);
-                y = rad * Math.sin(phi) * Math.sin(theta);
-                z = rad * Math.cos(phi) + 5;
+                const headR = 12 * Math.pow(Math.random(), 0.3);
+                x = headR * Math.sin(phi) * Math.cos(theta);
+                y = headR * Math.sin(phi) * Math.sin(theta) + 8;
+                z = headR * Math.cos(phi) + 12;
+            } else if (r < 0.48) {
+                // Mắt lân - hai vòng tròn sáng
+                const eye = Math.random() > 0.5 ? 1 : -1;
+                const ang = Math.random() * Math.PI * 2;
+                const eyeR = 3.5 * Math.sqrt(Math.random());
+                x = eye * 6 + Math.cos(ang) * eyeR;
+                y = 14 + Math.sin(ang) * eyeR;
+                z = 20;
+            } else if (r < 0.58) {
+                // Miệng lân rộng
+                x = (Math.random() - 0.5) * 18;
+                y = (Math.random() - 0.5) * 4;
+                z = 18 + Math.random() * 3;
+            } else if (r < 0.7) {
+                // Sừng/mào trên đầu
+                const side = Math.random() > 0.5 ? 1 : -1;
+                x = side * (3 + Math.random() * 5);
+                y = 18 + Math.random() * 8;
+                z = 10 + (Math.random() - 0.5) * 5;
             } else {
-                if (Math.random() > 0.5) { x = (Math.random() > 0.5 ? 8 : -8) + (Math.random() - 0.5) * 2; y = 5; z = 20; }
-                else { x = 0; y = -5; z = 22; }
+                // Thân/vải phía sau lượn sóng
+                const t = Math.random();
+                const bodyLen = 40;
+                const wave = Math.sin(t * Math.PI * 4) * 6;
+                x = (Math.random() - 0.5) * (14 - t * 10) + wave;
+                y = 5 - t * 8 + Math.sin(t * Math.PI * 2) * 4;
+                z = 8 - t * bodyLen;
             }
             return { x, y, z };
         }
@@ -393,9 +404,18 @@
                 if (axis === 0) gx = (Math.random() > 0.5 ? 1 : -1) * side / 2; else if (axis === 1) gy = (Math.random() > 0.5 ? 1 : -1) * side / 2; else gz = (Math.random() > 0.5 ? 1 : -1) * side / 2;
                 pGift.push(gx * (0.9 + Math.random() * 0.2), gy * (0.9 + Math.random() * 0.2), gz * (0.9 + Math.random() * 0.2));
 
-                // Universe
-                const arm = i % 3, spin = Math.random() * 3 * Math.PI, dist = spin * 5;
-                pUniverse.push(Math.cos(spin + (Math.PI * 2 / 3) * arm) * dist, (Math.random() - 0.5) * (100 - dist) / 5, Math.sin(spin + (Math.PI * 2 / 3) * arm) * dist);
+                // Rước đèn - đoàn rước vòng tròn với đèn lồng
+                const paradeT = Math.random();
+                const paradeAngle = paradeT * Math.PI * 3;
+                const paradeR = 15 + paradeT * 20;
+                const isLantern = Math.random() < 0.3;
+                const lanternH = isLantern ? 8 + Math.random() * 6 : (Math.random() - 0.5) * 4;
+                const pSpread = isLantern ? 1.5 : 3;
+                pUniverse.push(
+                    Math.cos(paradeAngle) * paradeR + (Math.random() - 0.5) * pSpread,
+                    Math.sin(paradeT * Math.PI * 2) * 3 + lanternH,
+                    Math.sin(paradeAngle) * paradeR + (Math.random() - 0.5) * pSpread
+                );
 
                 // CNTT7 & Lion
                 const ptC = getANHYEUEMPoint(), ptL = getLionPoint();
@@ -474,7 +494,7 @@
             loveMesh = new THREE.Mesh(new THREE.PlaneGeometry(70, 18), new THREE.MeshBasicMaterial({ map: txtTex("I Love Youuuuuuu ❤️", 100, '#FF69B4'), transparent: true, blending: THREE.AdditiveBlending }));
             loveMesh.position.set(0, -20, 20); loveMesh.visible = false; scene.add(loveMesh);
 
-            cntt7Mesh = new THREE.Mesh(new THREE.PlaneGeometry(50, 12), new THREE.MeshBasicMaterial({ map: txtTex("Tran Thi Ngoc Huyen", 100, '#00FFFF'), transparent: true, blending: THREE.AdditiveBlending }));
+            cntt7Mesh = new THREE.Mesh(new THREE.PlaneGeometry(60, 15), new THREE.MeshBasicMaterial({ map: txtTex("Trung Thu Vui Vẻ", 90, '#FFD700'), transparent: true, blending: THREE.AdditiveBlending }));
             cntt7Mesh.position.set(0, -30, 0); cntt7Mesh.visible = false; scene.add(cntt7Mesh);
         }
 
@@ -527,7 +547,7 @@
             attr.position.needsUpdate = true;
 
             // Rotation & Effects
-            if (targetState === 'UNIVERSE') { group.rotation.y -= 0.002; group.rotation.z = Math.sin(time * 0.5) * 0.2; }
+            if (targetState === 'UNIVERSE') { group.rotation.y += 0.006; group.rotation.z = 0; group.rotation.x = 0; }
             else if (targetState === 'GIFT') { group.rotation.y += 0.01; group.rotation.x = Math.sin(time) * 0.1; }
             else if (targetState === 'TREE') { group.rotation.y += 0.005; group.rotation.x = 0; group.rotation.z = 0; }
             else if (targetState === 'EXPLODE') {
@@ -570,7 +590,7 @@
             }
 
             titleMesh.visible = (state === 'TREE'); starMesh.visible = (state === 'TREE');
-            loveMesh.visible = (state === 'HEART'); cntt7Mesh.visible = (state === 'ANHYEUEM');
+            loveMesh.visible = false; cntt7Mesh.visible = (state === 'ANHYEUEM');
 
             if (state === 'EXPLODE') {
                 frameMeshes.forEach(f => f.visible = false);
