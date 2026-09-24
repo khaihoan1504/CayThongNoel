@@ -172,7 +172,7 @@
         <div class="guide">
             ❤️ <b>2 Tay (Tim):</b> Love<br>
             🖐 <b>Xòe tay:</b> Xem ảnh &nbsp;|&nbsp; 👌 <b>OK:</b> Zoom Photo<br>
-            ✌️ <b>2 Ngón:</b> Lời chúc &nbsp;|&nbsp; 🤟 <b>3 Ngón:</b> Bánh Trung Thu
+            ✌️ <b>2 Ngón:</b> Lời chúc &nbsp;|&nbsp; <b>3 Ngón:</b> Bánh Trung Thu
         </div>
         <button id="btnStart" onclick="startSystem()">🏮 BẮT ĐẦU 🏮</button>
     </div>
@@ -255,6 +255,7 @@
         let frameMeshes = [];
         let titleMesh, starMesh, loveMesh, cntt7Mesh;
         let mooncakeMesh, mooncakeLabelMesh;
+        let skyLanterns = [];
         let fireflySystem;
 
         let state = 'TREE';
@@ -376,6 +377,7 @@
             createDecorations();
             createFireflies();
             createMooncake();
+            createSkyLanterns();
             animate();
         }
 
@@ -426,10 +428,15 @@
                 const rad = 65 * Math.cbrt(Math.random());
                 pExplode.push(rad * Math.sin(phi) * Math.cos(lam), rad * Math.sin(phi) * Math.sin(lam), rad * Math.cos(phi));
 
-                const side = 40, axis = Math.floor(Math.random() * 3);
-                let gx = (Math.random() - 0.5) * side, gy = (Math.random() - 0.5) * side, gz = (Math.random() - 0.5) * side;
-                if (axis === 0) gx = (Math.random() > 0.5 ? 1 : -1) * side / 2; else if (axis === 1) gy = (Math.random() > 0.5 ? 1 : -1) * side / 2; else gz = (Math.random() > 0.5 ? 1 : -1) * side / 2;
-                pGift.push(gx * (0.9 + Math.random() * 0.2), gy * (0.9 + Math.random() * 0.2), gz * (0.9 + Math.random() * 0.2));
+                // Particles orbit around mooncake
+                const gTheta = Math.random() * Math.PI * 2;
+                const gPhi = Math.acos(2 * Math.random() - 1);
+                const gR = 22 + Math.random() * 12;
+                pGift.push(
+                    gR * Math.sin(gPhi) * Math.cos(gTheta),
+                    gR * Math.sin(gPhi) * Math.sin(gTheta),
+                    gR * Math.cos(gPhi)
+                );
 
                 // Rước đèn - đoàn rước vòng tròn với đèn lồng
                 const paradeT = Math.random();
@@ -651,6 +658,34 @@
             scene.add(mooncakeLabelMesh);
         }
 
+        function createSkyLanterns() {
+            for (let i = 0; i < 15; i++) {
+                const size = 1.5 + Math.random() * 1.5;
+                const geo = new THREE.SphereGeometry(size, 8, 8);
+                const mat = new THREE.MeshBasicMaterial({
+                    color: new THREE.Color().setHSL(0.08 + Math.random() * 0.05, 0.9, 0.5 + Math.random() * 0.2),
+                    transparent: true,
+                    opacity: 0.7 + Math.random() * 0.3,
+                    blending: THREE.AdditiveBlending
+                });
+                const lantern = new THREE.Mesh(geo, mat);
+                lantern.position.set(
+                    (Math.random() - 0.5) * 100,
+                    -40 + Math.random() * 80,
+                    (Math.random() - 0.5) * 50 - 10
+                );
+                lantern.visible = false;
+                lantern.userData = {
+                    speed: 0.08 + Math.random() * 0.12,
+                    wobble: Math.random() * Math.PI * 2,
+                    baseX: lantern.position.x,
+                    baseZ: lantern.position.z
+                };
+                scene.add(lantern);
+                skyLanterns.push(lantern);
+            }
+        }
+
         function updateParticleGroup(group, targetState, speed, time, handRotY) {
             const attr = group.geometry.attributes;
             const positions = attr.position.array, colors = attr.color.array, sizes = attr.size.array;
@@ -693,6 +728,12 @@
             updateParticleGroup(groupGold, state, speed, time, handRotY);
             updateParticleGroup(groupRed, state, speed, time, handRotY);
             updateParticleGroup(groupGift, state, speed, time, handRotY);
+
+            // Hide particles during wish state, show sky lanterns instead
+            const hideParticles = (state === 'ANHYEUEM');
+            groupGold.visible = !hideParticles;
+            groupRed.visible = !hideParticles;
+            groupGift.visible = !hideParticles;
 
             if (state === 'HEART' || state === 'ANHYEUEM') {
                 const beat = 1 + 0.1 * Math.sin(time * 6);
@@ -762,6 +803,24 @@
                 mooncakeMesh.scale.set(0.1, 0.1, 0.1);
                 mooncakeMesh.position.set(0, 0, 0);
                 mooncakeLabelMesh.visible = false;
+            }
+
+            // Sky lanterns for wish state
+            if (state === 'ANHYEUEM') {
+                skyLanterns.forEach(lantern => {
+                    lantern.visible = true;
+                    lantern.position.y += lantern.userData.speed;
+                    lantern.position.x = lantern.userData.baseX + Math.sin(time * 0.3 + lantern.userData.wobble) * 3;
+                    lantern.position.z = lantern.userData.baseZ + Math.cos(time * 0.2 + lantern.userData.wobble) * 2;
+                    lantern.material.opacity = 0.5 + 0.3 * Math.sin(time * 2 + lantern.userData.wobble);
+                    if (lantern.position.y > 70) {
+                        lantern.position.y = -50;
+                        lantern.userData.baseX = (Math.random() - 0.5) * 100;
+                        lantern.userData.baseZ = (Math.random() - 0.5) * 50 - 10;
+                    }
+                });
+            } else {
+                skyLanterns.forEach(lantern => lantern.visible = false);
             }
 
             if (fireflySystem) {
