@@ -139,8 +139,8 @@
     <div id="ui-layer">
         <div class="guide">
             ❤️ <b>2 Tay (Tim):</b> Love<br>
-            ✊ <b>Nắm đấm:</b> Đèn lồng &nbsp;|&nbsp; 🖐 <b>Xòe tay:</b> Trăng tròn &nbsp;|&nbsp; 👌 <b>OK:</b> Zoom Photo<br>
-            <b>3 Ngón:</b> Bánh TT &nbsp;|&nbsp; ☝️ <b>1 Ngón:</b> Rước đèn &nbsp;|&nbsp; ✌️ <b>2 Ngón:</b> Sít rịt &nbsp;|&nbsp; 🤘 <b>Rock:</b> Múa Lân
+            🖐 <b>Xòe tay:</b> Xem ảnh &nbsp;|&nbsp; 👌 <b>OK:</b> Zoom Photo<br>
+            ✌️ <b>2 Ngón:</b> Lời chúc &nbsp;|&nbsp; 🤟 <b>3 Ngón:</b> Bánh Trung Thu
         </div>
         <button id="btnStart" onclick="startSystem()">🏮 BẮT ĐẦU 🏮</button>
     </div>
@@ -225,6 +225,7 @@
         let photoMeshes = [];
         let frameMeshes = [];
         let titleMesh, starMesh, loveMesh, cntt7Mesh;
+        let mooncakeMesh, mooncakeLabelMesh;
         let fireflySystem; // firefly particle system
 
         let state = 'TREE';
@@ -346,6 +347,7 @@
             createPhotos();
             createDecorations();
             createFireflies();
+            createMooncake();
             animate();
         }
 
@@ -494,8 +496,23 @@
             loveMesh = new THREE.Mesh(new THREE.PlaneGeometry(70, 18), new THREE.MeshBasicMaterial({ map: txtTex("I Love Youuuuuuu ❤️", 100, '#FF69B4'), transparent: true, blending: THREE.AdditiveBlending }));
             loveMesh.position.set(0, -20, 20); loveMesh.visible = false; scene.add(loveMesh);
 
-            cntt7Mesh = new THREE.Mesh(new THREE.PlaneGeometry(60, 15), new THREE.MeshBasicMaterial({ map: txtTex("Trung Thu Vui Vẻ", 90, '#FFD700'), transparent: true, blending: THREE.AdditiveBlending }));
-            cntt7Mesh.position.set(0, -30, 0); cntt7Mesh.visible = false; scene.add(cntt7Mesh);
+            const wishCvs = document.createElement('canvas');
+            wishCvs.width = 1024; wishCvs.height = 512;
+            const wCtx = wishCvs.getContext('2d');
+            wCtx.textAlign = 'center';
+            wCtx.shadowColor = '#FFF';
+            wCtx.shadowBlur = 25;
+            wCtx.font = 'bold italic 55px "Times New Roman"';
+            wCtx.fillStyle = '#FFD700';
+            wCtx.fillText('Chúc Khánh Linh', 512, 140);
+            wCtx.font = 'bold italic 65px "Times New Roman"';
+            wCtx.fillStyle = '#FF8C00';
+            wCtx.fillText('Trung Thu Vui Vẻ', 512, 280);
+            wCtx.font = 'italic 45px "Times New Roman"';
+            wCtx.fillStyle = '#FFB347';
+            wCtx.fillText('Tràn Ngập Niềm Vui', 512, 400);
+            cntt7Mesh = new THREE.Mesh(new THREE.PlaneGeometry(70, 35), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(wishCvs), transparent: true, blending: THREE.AdditiveBlending }));
+            cntt7Mesh.position.set(0, -25, 5); cntt7Mesh.visible = false; scene.add(cntt7Mesh);
         }
 
         // --- Fireflies ---
@@ -527,6 +544,88 @@
             fireflySystem = new THREE.Points(geo, mat);
             fireflySystem.frustumCulled = false;
             scene.add(fireflySystem);
+        }
+
+        function createMooncake() {
+            // Top texture with traditional pattern
+            const cvs = document.createElement('canvas');
+            cvs.width = 512; cvs.height = 512;
+            const ctx = cvs.getContext('2d');
+            const grd = ctx.createRadialGradient(256, 256, 0, 256, 256, 240);
+            grd.addColorStop(0, '#DAA520');
+            grd.addColorStop(0.6, '#B8860B');
+            grd.addColorStop(0.85, '#8B6914');
+            grd.addColorStop(1, '#654321');
+            ctx.fillStyle = grd;
+            ctx.beginPath();
+            ctx.arc(256, 256, 240, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#A0722D';
+            ctx.lineWidth = 4;
+            ctx.beginPath(); ctx.arc(256, 256, 200, 0, Math.PI * 2); ctx.stroke();
+            ctx.beginPath(); ctx.arc(256, 256, 140, 0, Math.PI * 2); ctx.stroke();
+            ctx.fillStyle = '#8B4513';
+            ctx.font = 'bold 100px serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('\u6708', 256, 256);
+            ctx.fillStyle = '#A0722D';
+            for (let i = 0; i < 8; i++) {
+                const a = i * Math.PI / 4;
+                ctx.beginPath();
+                ctx.arc(256 + Math.cos(a) * 170, 256 + Math.sin(a) * 170, 12, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            const topTex = new THREE.CanvasTexture(cvs);
+
+            // Side texture
+            const sCvs = document.createElement('canvas');
+            sCvs.width = 512; sCvs.height = 128;
+            const sCtx = sCvs.getContext('2d');
+            const sGrd = sCtx.createLinearGradient(0, 0, 0, 128);
+            sGrd.addColorStop(0, '#C8962D');
+            sGrd.addColorStop(0.3, '#DAA520');
+            sGrd.addColorStop(0.7, '#B8860B');
+            sGrd.addColorStop(1, '#8B6914');
+            sCtx.fillStyle = sGrd;
+            sCtx.fillRect(0, 0, 512, 128);
+            sCtx.fillStyle = '#A0722D';
+            for (let i = 0; i < 24; i++) {
+                sCtx.beginPath();
+                sCtx.arc(i * 21.3 + 10, 20, 8, 0, Math.PI);
+                sCtx.fill();
+            }
+            const sideTex = new THREE.CanvasTexture(sCvs);
+
+            const geo = new THREE.CylinderGeometry(18, 18, 7, 32);
+            const mats = [
+                new THREE.MeshBasicMaterial({ map: sideTex }),
+                new THREE.MeshBasicMaterial({ map: topTex }),
+                new THREE.MeshBasicMaterial({ map: topTex })
+            ];
+            mooncakeMesh = new THREE.Mesh(geo, mats);
+            mooncakeMesh.visible = false;
+            mooncakeMesh.rotation.x = -0.4;
+            mooncakeMesh.scale.set(0.1, 0.1, 0.1);
+            scene.add(mooncakeMesh);
+
+            // Label
+            const lCvs = document.createElement('canvas');
+            lCvs.width = 512; lCvs.height = 128;
+            const lCtx = lCvs.getContext('2d');
+            lCtx.font = 'bold italic 50px "Times New Roman"';
+            lCtx.fillStyle = '#FFD700';
+            lCtx.textAlign = 'center';
+            lCtx.shadowColor = '#FFF';
+            lCtx.shadowBlur = 15;
+            lCtx.fillText('Bánh Trung Thu', 256, 80);
+            mooncakeLabelMesh = new THREE.Mesh(
+                new THREE.PlaneGeometry(40, 10),
+                new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(lCvs), transparent: true, blending: THREE.AdditiveBlending })
+            );
+            mooncakeLabelMesh.position.set(0, -20, 30);
+            mooncakeLabelMesh.visible = false;
+            scene.add(mooncakeLabelMesh);
         }
 
         function updateParticleGroup(group, targetState, speed, time, handRotY) {
@@ -631,6 +730,21 @@
             } else photoMeshes.forEach(m => { m.visible = false; m.scale.set(0, 0, 0); });
             frameMeshes.forEach(f => f.visible = false);
 
+            // Mooncake display
+            if (state === 'GIFT') {
+                mooncakeMesh.visible = true;
+                mooncakeMesh.rotation.y += 0.012;
+                mooncakeMesh.position.lerp(new THREE.Vector3(0, 0, 35), 0.05);
+                mooncakeMesh.scale.lerp(new THREE.Vector3(1.5, 1.5, 1.5), 0.05);
+                mooncakeLabelMesh.visible = true;
+                mooncakeLabelMesh.position.lerp(new THREE.Vector3(0, -18, 35), 0.05);
+            } else {
+                mooncakeMesh.visible = false;
+                mooncakeMesh.scale.set(0.1, 0.1, 0.1);
+                mooncakeMesh.position.set(0, 0, 0);
+                mooncakeLabelMesh.visible = false;
+            }
+
             // --- Firefly update ---
             if (fireflySystem) {
                 const pos = fireflySystem.geometry.attributes.position.array;
@@ -714,13 +828,11 @@
                 if (idx && mid && ring && pinky) { state = 'EXPLODE'; return; }
 
                 // Point: Only Index
-                if (idx && !mid && !ring && !pinky) { state = 'UNIVERSE'; return; }
 
                 // Victory: Index & Middle
                 if (idx && mid && !ring && !pinky) { state = 'ANHYEUEM'; return; }
 
                 // Rock: Index & Pinky
-                if (idx && !mid && !ring && pinky) { state = 'LION'; return; }
 
                 // Gift: three fingers (Index + Middle + Ring) extended, Pinky not extended
                 if (idx && mid && ring && !pinky) { state = 'GIFT'; return; }
