@@ -225,7 +225,7 @@
         let photoMeshes = [];
         let frameMeshes = [];
         let titleMesh, starMesh, loveMesh, cntt7Mesh;
-        let mooncakeMesh, mooncakeLabelMesh;
+        // Mooncake 3D vars removed
         let skyLanterns = [];
         let fireflySystem; // firefly particle system
 
@@ -348,7 +348,6 @@
             createPhotos();
             createDecorations();
             createFireflies();
-            createMooncake();
             createSkyLanterns();
             animate();
         }
@@ -403,15 +402,27 @@
                 pExplode.push(rad * Math.sin(phi) * Math.cos(lam), rad * Math.sin(phi) * Math.sin(lam), rad * Math.cos(phi));
 
                 // Gift
-                // Particles orbit around mooncake
-                const gTheta = Math.random() * Math.PI * 2;
-                const gPhi = Math.acos(2 * Math.random() - 1);
-                const gR = 22 + Math.random() * 12;
-                pGift.push(
-                    gR * Math.sin(gPhi) * Math.cos(gTheta),
-                    gR * Math.sin(gPhi) * Math.sin(gTheta),
-                    gR * Math.cos(gPhi)
-                );
+                // Bánh trung thu bằng hạt
+                const tGift = Math.random();
+                let gx, gy, gz;
+                const R = 25;
+                const H = 15;
+                if (tGift < 0.4) { // Mặt trên
+                    const r = Math.sqrt(Math.random()) * R;
+                    const theta = Math.random() * Math.PI * 2;
+                    gx = r * Math.cos(theta); gy = H/2; gz = r * Math.sin(theta);
+                    if (r > R * 0.8) gy += Math.sin(theta * 12) * 2; // Viền lượn sóng
+                } else if (tGift < 0.8) { // Mặt dưới
+                    const r = Math.sqrt(Math.random()) * R;
+                    const theta = Math.random() * Math.PI * 2;
+                    gx = r * Math.cos(theta); gy = -H/2; gz = r * Math.sin(theta);
+                } else { // Viền xung quanh
+                    const theta = Math.random() * Math.PI * 2;
+                    const y = (Math.random() - 0.5) * H;
+                    const r = R + Math.sin(theta * 12) * 2;
+                    gx = r * Math.cos(theta); gy = y; gz = r * Math.sin(theta);
+                }
+                pGift.push(gx, gy, gz);
 
                 // Rước đèn - đoàn rước vòng tròn với đèn lồng
                 const paradeT = Math.random();
@@ -504,22 +515,22 @@
             loveMesh.position.set(0, -20, 20); loveMesh.visible = false; scene.add(loveMesh);
 
             const wishCvs = document.createElement('canvas');
-            wishCvs.width = 1024; wishCvs.height = 512;
+            wishCvs.width = 2560; wishCvs.height = 128;
             const wCtx = wishCvs.getContext('2d');
             wCtx.textAlign = 'center';
+            wCtx.textBaseline = 'middle';
             wCtx.shadowColor = '#FFF';
-            wCtx.shadowBlur = 25;
-            wCtx.font = 'bold italic 55px "Times New Roman"';
-            wCtx.fillStyle = '#FFD700';
-            wCtx.fillText('Chúc Khánh Linh', 512, 140);
+            wCtx.shadowBlur = 15;
             wCtx.font = 'bold italic 65px "Times New Roman"';
-            wCtx.fillStyle = '#FF8C00';
-            wCtx.fillText('Trung Thu Vui Vẻ', 512, 280);
-            wCtx.font = 'italic 45px "Times New Roman"';
-            wCtx.fillStyle = '#FFB347';
-            wCtx.fillText('Tràn Ngập Niềm Vui', 512, 400);
-            cntt7Mesh = new THREE.Mesh(new THREE.PlaneGeometry(70, 35), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(wishCvs), transparent: true, blending: THREE.AdditiveBlending }));
-            cntt7Mesh.position.set(0, -25, 5); cntt7Mesh.visible = false; scene.add(cntt7Mesh);
+            wCtx.fillStyle = '#FFD700';
+            wCtx.fillText('Chúc Khánh Linh Trung Thu Vui Vẻ, Tràn Ngập Niềm Vui ❤️', 1280, 64);
+            cntt7Mesh = new THREE.Mesh(
+                new THREE.PlaneGeometry(200, 10),
+                new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(wishCvs), transparent: true, blending: THREE.AdditiveBlending })
+            );
+            cntt7Mesh.position.set(120, -20, 10);
+            cntt7Mesh.visible = false;
+            scene.add(cntt7Mesh);
         }
 
         // --- Fireflies ---
@@ -551,88 +562,6 @@
             fireflySystem = new THREE.Points(geo, mat);
             fireflySystem.frustumCulled = false;
             scene.add(fireflySystem);
-        }
-
-        function createMooncake() {
-            // Top texture with traditional pattern
-            const cvs = document.createElement('canvas');
-            cvs.width = 512; cvs.height = 512;
-            const ctx = cvs.getContext('2d');
-            const grd = ctx.createRadialGradient(256, 256, 0, 256, 256, 240);
-            grd.addColorStop(0, '#DAA520');
-            grd.addColorStop(0.6, '#B8860B');
-            grd.addColorStop(0.85, '#8B6914');
-            grd.addColorStop(1, '#654321');
-            ctx.fillStyle = grd;
-            ctx.beginPath();
-            ctx.arc(256, 256, 240, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.strokeStyle = '#A0722D';
-            ctx.lineWidth = 4;
-            ctx.beginPath(); ctx.arc(256, 256, 200, 0, Math.PI * 2); ctx.stroke();
-            ctx.beginPath(); ctx.arc(256, 256, 140, 0, Math.PI * 2); ctx.stroke();
-            ctx.fillStyle = '#8B4513';
-            ctx.font = 'bold 100px serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText('\u6708', 256, 256);
-            ctx.fillStyle = '#A0722D';
-            for (let i = 0; i < 8; i++) {
-                const a = i * Math.PI / 4;
-                ctx.beginPath();
-                ctx.arc(256 + Math.cos(a) * 170, 256 + Math.sin(a) * 170, 12, 0, Math.PI * 2);
-                ctx.fill();
-            }
-            const topTex = new THREE.CanvasTexture(cvs);
-
-            // Side texture
-            const sCvs = document.createElement('canvas');
-            sCvs.width = 512; sCvs.height = 128;
-            const sCtx = sCvs.getContext('2d');
-            const sGrd = sCtx.createLinearGradient(0, 0, 0, 128);
-            sGrd.addColorStop(0, '#C8962D');
-            sGrd.addColorStop(0.3, '#DAA520');
-            sGrd.addColorStop(0.7, '#B8860B');
-            sGrd.addColorStop(1, '#8B6914');
-            sCtx.fillStyle = sGrd;
-            sCtx.fillRect(0, 0, 512, 128);
-            sCtx.fillStyle = '#A0722D';
-            for (let i = 0; i < 24; i++) {
-                sCtx.beginPath();
-                sCtx.arc(i * 21.3 + 10, 20, 8, 0, Math.PI);
-                sCtx.fill();
-            }
-            const sideTex = new THREE.CanvasTexture(sCvs);
-
-            const geo = new THREE.CylinderGeometry(18, 18, 7, 32);
-            const mats = [
-                new THREE.MeshBasicMaterial({ map: sideTex }),
-                new THREE.MeshBasicMaterial({ map: topTex }),
-                new THREE.MeshBasicMaterial({ map: topTex })
-            ];
-            mooncakeMesh = new THREE.Mesh(geo, mats);
-            mooncakeMesh.visible = false;
-            mooncakeMesh.rotation.x = -0.4;
-            mooncakeMesh.scale.set(0.1, 0.1, 0.1);
-            scene.add(mooncakeMesh);
-
-            // Label
-            const lCvs = document.createElement('canvas');
-            lCvs.width = 512; lCvs.height = 128;
-            const lCtx = lCvs.getContext('2d');
-            lCtx.font = 'bold italic 50px "Times New Roman"';
-            lCtx.fillStyle = '#FFD700';
-            lCtx.textAlign = 'center';
-            lCtx.shadowColor = '#FFF';
-            lCtx.shadowBlur = 15;
-            lCtx.fillText('Bánh Trung Thu', 256, 80);
-            mooncakeLabelMesh = new THREE.Mesh(
-                new THREE.PlaneGeometry(40, 10),
-                new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(lCvs), transparent: true, blending: THREE.AdditiveBlending })
-            );
-            mooncakeLabelMesh.position.set(0, -20, 30);
-            mooncakeLabelMesh.visible = false;
-            scene.add(mooncakeLabelMesh);
         }
 
         function createSkyLanterns() {
@@ -730,7 +659,15 @@
             }
 
             titleMesh.visible = (state === 'TREE'); starMesh.visible = (state === 'TREE');
-            loveMesh.visible = false; cntt7Mesh.visible = (state === 'ANHYEUEM');
+            loveMesh.visible = false;
+            if (state === 'ANHYEUEM') {
+                cntt7Mesh.visible = true;
+                cntt7Mesh.position.x -= 0.8; // Tốc độ chạy chữ
+                if (cntt7Mesh.position.x < -150) cntt7Mesh.position.x = 150; // Lặp lại
+            } else {
+                cntt7Mesh.visible = false;
+                cntt7Mesh.position.x = 120; // Reset vị trí
+            }
 
             if (state === 'EXPLODE') {
                 frameMeshes.forEach(f => f.visible = false);
@@ -770,21 +707,6 @@
                 });
             } else photoMeshes.forEach(m => { m.visible = false; m.scale.set(0, 0, 0); });
             frameMeshes.forEach(f => f.visible = false);
-
-            // Mooncake display
-            if (state === 'GIFT') {
-                mooncakeMesh.visible = true;
-                mooncakeMesh.rotation.y += 0.012;
-                mooncakeMesh.position.lerp(new THREE.Vector3(0, 0, 35), 0.05);
-                mooncakeMesh.scale.lerp(new THREE.Vector3(1.5, 1.5, 1.5), 0.05);
-                mooncakeLabelMesh.visible = true;
-                mooncakeLabelMesh.position.lerp(new THREE.Vector3(0, -18, 35), 0.05);
-            } else {
-                mooncakeMesh.visible = false;
-                mooncakeMesh.scale.set(0.1, 0.1, 0.1);
-                mooncakeMesh.position.set(0, 0, 0);
-                mooncakeLabelMesh.visible = false;
-            }
 
             // Sky lanterns for wish state
             if (state === 'ANHYEUEM') {
